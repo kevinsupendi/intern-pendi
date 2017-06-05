@@ -3,8 +3,8 @@
 ## Recreate using Google Compute Engine VMs
 
 References :
-[Kelseyhightower] (https://github.com/kelseyhightower/kubernetes-the-hard-way/blob/master/docs/06-kubernetes-worker.md)
-[LearnKubernetes] (https://github.com/Praqma/LearnKubernetes/blob/master/kamran/Kubernetes-The-Hard-Way-on-BareMetal.md)
+https://github.com/kelseyhightower/kubernetes-the-hard-way/blob/master/docs/06-kubernetes-worker.md
+https://github.com/Praqma/LearnKubernetes/blob/master/kamran/Kubernetes-The-Hard-Way-on-BareMetal.md
 
 ### Steps to do :
 
@@ -69,5 +69,67 @@ References :
 
 **Master Component**
 
-10. 
+**API Server**
 
+10. Setup TLS certificate
+
+	sudo mkdir -p /var/lib/kubernetes
+	sudo mv ca.pem kubernetes-key.pem kubernetes.pem /var/lib/kubernetes/
+
+11. Download and install kubernetes latest binary
+
+	wget https://storage.googleapis.com/kubernetes-release/release/v1.6.4/bin/linux/amd64/kube-apiserver
+	wget https://storage.googleapis.com/kubernetes-release/release/v1.6.4/bin/linux/amd64/kube-controller-manager
+	wget https://storage.googleapis.com/kubernetes-release/release/v1.6.4/bin/linux/amd64/kube-scheduler
+	wget https://storage.googleapis.com/kubernetes-release/release/v1.6.4/bin/linux/amd64/kubectl
+
+	chmod +x kube-apiserver kube-controller-manager kube-scheduler kubectl
+	sudo mv kube-apiserver kube-controller-manager kube-scheduler kubectl /usr/bin/
+
+12. Setup Authentication and Authorization with token
+
+	wget https://raw.githubusercontent.com/kelseyhightower/kubernetes-the-hard-way/master/token.csv
+	
+13. edit sample token
+14. sudo mv token.csv /var/lib/kubernetes/
+15. Create authorization policy file (for ABAC mode)
+16. Create systemd file for apiserver, controller manager, scheduler, then run the service
+17. Repeat step 10-16 for other Master VM
+
+**Worker Component**
+
+18. Setup TLS certificate
+	
+	sudo mkdir -p /var/lib/kubernetes
+	sudo mv ca.pem kubernetes-key.pem kubernetes.pem /var/lib/kubernetes/
+
+19. Install docker
+
+	wget https://get.docker.com/builds/Linux/x86_64/docker-1.11.2.tgz
+
+	tar -xf docker-1.11.2.tgz
+
+	sudo cp docker/docker* /usr/bin/
+
+20. Setup kubelet and kube proxy (configure the parameters for systemd files, and dont forget to edit the tokens too)
+
+	sudo mkdir -p /opt/cni
+
+	wget https://storage.googleapis.com/kubernetes-release/network-plugins/cni-c864f0e1ea73719b8f4582402b0847064f9883b0.tar.gz
+	sudo tar -xvf cni-c864f0e1ea73719b8f4582402b0847064f9883b0.tar.gz -C /opt/cni
+
+	wget https://storage.googleapis.com/kubernetes-release/release/v1.6.4/bin/linux/amd64/kubectl
+	wget https://storage.googleapis.com/kubernetes-release/release/v1.6.4/bin/linux/amd64/kube-proxy
+	wget https://storage.googleapis.com/kubernetes-release/release/v1.6.4/bin/linux/amd64/kubelet
+
+21. Repeat step 18-20 to other Worker VMs
+22. Check Pod CIDR
+
+**Testing Cluster**
+
+23. Run test pod
+24. Configure routing between pods
+25. Adding DNS add-ons
+26. Smoke Test
+
+ NODE_PORT=$(kubectl get svc multi --output=jsonpath='{range .spec.ports[0]}{.nodePort}')
