@@ -1,0 +1,7 @@
+- client cert
+- 2 container in one Pod (networking) : pause container
+- service hidup dmn : service bukan process, tapi kubernetes Object untuk menyimpan ip dan ports
+
+Next :
+- Automate with Ansible script
+- Deploy usable Jenkins service in Kubernetes 
