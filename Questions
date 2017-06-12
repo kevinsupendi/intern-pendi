@@ -1,0 +1,10 @@
+- client cert
+- 2 container in one Pod (networking) : pause container, container lain di map ke pause container
+- service hidup dmn : service bukan process, tapi kubernetes Object untuk menyimpan ip dan ports
+- Load Balancer ke Kubernetes
+- Service yg multiple pod modelny aktif pasif atau aktif aktif? algonya?
+- Jenkins sharing volume? slaveny gk lgsg mati?
+
+Next :
+- Automate with Ansible script
+- Deploy usable Jenkins service in Kubernetes 

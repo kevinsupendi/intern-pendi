@@ -18,7 +18,7 @@ https://github.com/Praqma/LearnKubernetes/blob/master/kamran/Kubernetes-The-Hard
 	- Worker component (kubelet, kube-proxy, docker)
 	- Load Balancer (optional)
 
-4. Generate certificates if necessary
+4. Generate certificates if necessary (HTTPS)
 5. Copy certs to all components
 
 **etcd**

@@ -1,0 +1,106 @@
+# MASTER
+- name: Configure master cluster
+  hosts: master
+  become: true
+  become_method: sudo
+  tasks:
+    - name: Creates directory /var/lib/kubernetes
+      file: path=/var/lib/kubernetes state=directory
+    - name: Move certs to /var/lib/kubernetes
+      command: mv /ca.pem /kubernetes-key.pem /kubernetes.pem /var/lib/kubernetes/
+
+    - name: Download kube-apiserver binary
+      get_url:
+        url: https://storage.googleapis.com/kubernetes-release/release/v1.6.4/bin/linux/amd64/kube-apiserver
+        dest: /usr/bin/kube-apiserver
+    - name: Download kube-controller-manager binary
+      get_url:
+        url: https://storage.googleapis.com/kubernetes-release/release/v1.6.4/bin/linux/amd64/kube-controller-manager
+        dest: /usr/bin/kube-controller-manager
+    - name: Download kube-scheduler binary
+      get_url:
+        url: https://storage.googleapis.com/kubernetes-release/release/v1.6.4/bin/linux/amd64/kube-scheduler
+        dest: /usr/bin/kube-scheduler
+    - name: Download kubectl binary
+      get_url:
+        url: https://storage.googleapis.com/kubernetes-release/release/v1.6.4/bin/linux/amd64/kubectl
+        dest: /usr/bin/kubectl
+
+    - name: Changing kube-apiserver permission
+      file: dest=/usr/bin/kube-apiserver mode=a+x
+
+    - name: Changing kube-controller-manager permission
+      file: dest=/usr/bin/kube-controller-manager mode=a+x
+
+    - name: Changing kube-scheduler permission
+      file: dest=/usr/bin/kube-scheduler mode=a+x
+
+    - name: Changing kubectl permission
+      file: dest=/usr/bin/kubectl mode=a+x
+
+    - copy:
+        src: templates/token.csv
+        dest: /var/lib/kubernetes/
+        owner: root
+        group: root
+        mode: 0644
+    - copy:
+        src: templates/authorization-policy.jsonl
+        dest: /var/lib/kubernetes/
+        owner: root
+        group: root
+        mode: 0644
+    - copy:
+        src: templates/systemd/kube-apiserver.service
+        dest: /etc/systemd/system
+        owner: root
+        group: root
+        mode: 0644
+    - copy:
+        src: templates/systemd/kube-scheduler.service
+        dest: /etc/systemd/system
+        owner: root
+        group: root
+        mode: 0644
+    - copy:
+        src: templates/systemd/kube-controller-manager.service
+        dest: /etc/systemd/system
+        owner: root
+        group: root
+        mode: 0644
+    - replace:
+        path: /etc/systemd/system/kube-apiserver.service
+        regexp: 'INTERNAL_IP'
+        replace: "{{ ansible_eth0.ipv4.address }}"
+    - replace:
+        path: /etc/systemd/system/kube-scheduler.service
+        regexp: 'INTERNAL_IP'
+        replace: "{{ ansible_eth0.ipv4.address }}"
+    - replace:
+        path: /etc/systemd/system/kube-controller-manager.service
+        regexp: 'INTERNAL_IP'
+        replace: "{{ ansible_eth0.ipv4.address }}"
+    - name: Reload systemctl
+      command: systemctl daemon-reload
+    - name: Enable apiserver
+      command: systemctl enable kube-apiserver
+    - name: Start apiserver service
+      command: systemctl start kube-apiserver
+    - name: Restart apiserver service
+      command: systemctl restart kube-apiserver
+    - name: Enable scheduler
+      command: systemctl enable kube-scheduler
+    - name: Start scheduler service
+      command: systemctl start kube-scheduler
+    - name: Restart scheduler service
+      command: systemctl restart kube-scheduler
+    - name: Enable controller manager
+      command: systemctl enable kube-controller-manager
+    - name: Start kube-controller-manager service
+      command: systemctl start kube-controller-manager
+    - name: Restart kube-controller-manager service
+      command: systemctl restart kube-controller-manager
+    - name: Check master component
+      command: kubectl get componentstatuses
+      register: kubestatus
+    - debug: var=kubestatus.stdout_lines
