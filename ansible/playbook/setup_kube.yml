@@ -2,7 +2,9 @@
   name: Gather facts from collectors
   become: true
   become_method: sudo
-  tasks: [ ]
+  tasks:
+    - debug:
+        msg: "System {{ inventory_hostname[-1] | int - 1}}"
 - name: Create template files
   hosts: localhost
   connection: local
@@ -97,7 +99,7 @@
 - include: setup_master.yml
 - include: setup_node.yml
 
-# CHECK WORKER
+# CHECK WORKER AND INSTALL ADDONS
 - name: Check nodes
   hosts: master1
   become: true
@@ -107,3 +109,21 @@
       command: kubectl get nodes -o wide
       register: kubenodes
     - debug: var=kubenodes.stdout_lines
+    - copy:
+        src: ../../addons/kube-dashboard.yaml
+        dest: /
+        owner: root
+        group: root
+        mode: 0644
+    - copy:
+        src: ../../addons/kubedns.yaml
+        dest: /
+        owner: root
+        group: root
+        mode: 0644
+    - name: Deploy addons dns
+      command: kubectl apply -f /kubedns.yaml
+      ignore_errors: yes
+    - name: Deploy addons dashboard
+      command: kubectl apply -f /kube-dashboard.yaml
+      ignore_errors: yes

@@ -1,9 +1,9 @@
 - client cert
 - 2 container in one Pod (networking) : pause container, container lain di map ke pause container
 - service hidup dmn : service bukan process, tapi kubernetes Object untuk menyimpan ip dan ports
-- Load Balancer ke Kubernetes
-- Service yg multiple pod modelny aktif pasif atau aktif aktif? algonya?
-- Jenkins sharing volume? slaveny gk lgsg mati?
+- Load Balancer ke Kubernetes - Default TCP Load Balancer, memanfaatkan kube-proxy
+- Service yg multiple pod modelny aktif pasif atau aktif aktif? algonya? Semuanya aktif, kube-proxy memakai probability di iptables, jadi gak round robin, tetapi random
+- Jenkins sharing volume? slaveny gk lgsg mati? Kalo slave gk langsung mati hrus config sendiri, volume sharing bisa pakai NFS atau PV, tetapi belum dicoba, harus efektif juga sharingnya.
 
 Next :
 - Automate with Ansible script

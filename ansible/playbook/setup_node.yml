@@ -6,8 +6,16 @@
   tasks:
     - name: Creates directory /var/lib/kubernetes
       file: path=/var/lib/kubernetes state=directory
+    - name: Creates directory /var/lib/kubelet
+      file: path=/var/lib/kubelet state=directory
     - name: Move certs to /var/lib/kubernetes
       command: mv /ca.pem /kubernetes-key.pem /kubernetes.pem /var/lib/kubernetes/
+    - copy:
+        src: templates/kubeconfig
+        dest: /var/lib/kubelet
+        owner: root
+        group: root
+        mode: 0644
     - name: Download Docker binary
       get_url:
         url: https://get.docker.com/builds/Linux/x86_64/docker-1.11.2.tgz
@@ -26,6 +34,19 @@
       copy: src=/docker/docker-containerd-shim dest=/usr/bin/ remote_src=yes directory_mode=yes
     - name: Copy extracted files to /usr/bin
       copy: src=/docker/docker-runc dest=/usr/bin/ remote_src=yes directory_mode=yes
+
+    - name: Changing docker permission
+      file: dest=/usr/bin/docker mode=a+x
+    - name: Changing docker permission
+      file: dest=/usr/bin/docker-containerd mode=a+x
+    - name: Changing docker permission
+      file: dest=/usr/bin/docker-containerd-shim mode=a+x
+    - name: Changing docker permission
+      file: dest=/usr/bin/docker-containerd-ctr mode=a+x
+    - name: Changing docker permission
+      file: dest=/usr/bin/docker-runc mode=a+x
+
+    
     - name: Creates directory /opt/cni
       file: path=/opt/cni state=directory
     - name: Download CNI plugin
@@ -77,6 +98,32 @@
         owner: root
         group: root
         mode: 0644
+    - name: Delete docker bridge
+      command: iptables -t nat -F
+      ignore_errors: yes
+    - name: Delete docker bridge
+      command: ip link set docker0 down
+      ignore_errors: yes
+    - name: Delete docker bridge
+      command: ip link delete docker0
+      ignore_errors: yes
+    - name: Delete cbr0 bridge
+      command: ip link set cbr0 down
+      ignore_errors: yes
+    - name: Delete cbr0 bridge
+      command: ip link delete cbr0
+      ignore_errors: yes
+    - name: Stop docker service
+      command: systemctl stop docker
+      ignore_errors: yes
+    - name: Create cbr0 bridge
+      command: ip link add name cbr0 type bridge
+    - name: Create cbr0 bridge
+      command: ip link set dev cbr0 mtu 1460
+    - name: Create cbr0 bridge
+      command: "ip addr add 10.200.{{ inventory_hostname[-1] | int - 1}}.1/24 dev cbr0"
+    - name: Create cbr0 bridge
+      command: ip link set dev cbr0 up
     - name: Reload systemctl
       command: systemctl daemon-reload
     - name: Enable docker
@@ -97,3 +144,7 @@
       command: systemctl start kube-proxy
     - name: Restart kube-proxy service
       command: systemctl restart kube-proxy
+    - name: Check docker
+      command: docker version
+      register: docker
+    - debug: var=docker.stdout_lines

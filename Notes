@@ -11,3 +11,4 @@ Notes on Ansible :
   1. etcd.service = etcd servers
   2. apiserver.service =  number of apiserver and etcd servers
   3. kubelet.service = apiservers
+- Sometimes cbr0 bridges ips are not configured correctly, creating errors in routing
