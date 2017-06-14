@@ -4,11 +4,7 @@ Notes on this Project :
 - I use kubenet network plugin (default), that creates new cbr0 bridge when deploying pods. Make sure docker in each node connect to cbr0 bridge
 - When configuring Jenkins build executor, use 'jnlp' for container name and pod name
 - I use sudo chmod 777 /var/run/docker.sock to hack with docker inside docker for jenkins easy configuration :p
-- GCE routing module not available in Ansible, must have done it manually in GCP Console 
 
 Notes on Ansible :
-- Some condition are not fully automated yet:
-  1. etcd.service = etcd servers
-  2. apiserver.service =  number of apiserver and etcd servers
-  3. kubelet.service = apiservers
 - Sometimes cbr0 bridges ips are not configured correctly, creating errors in routing
+- Last part in setup_kube.yml host is not correct yet

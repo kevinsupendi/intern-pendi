@@ -4,7 +4,7 @@
 - Load Balancer ke Kubernetes - Default TCP Load Balancer, memanfaatkan kube-proxy
 - Service yg multiple pod modelny aktif pasif atau aktif aktif? algonya? Semuanya aktif, kube-proxy memakai probability di iptables, jadi gak round robin, tetapi random
 - Jenkins sharing volume? slaveny gk lgsg mati? Kalo slave gk langsung mati hrus config sendiri, volume sharing bisa pakai NFS atau PV, tetapi belum dicoba, harus efektif juga sharingnya.
+- GCP IP limitation
 
 Next :
-- Automate with Ansible script
-- Deploy usable Jenkins service in Kubernetes 
+- Network diperjelas lagi, routing (GCP), siapin demo

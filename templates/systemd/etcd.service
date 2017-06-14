@@ -15,7 +15,7 @@ ExecStart=/usr/bin/etcd --name ETCDNAME \
   --listen-client-urls https://INTERNAL_IP:2379,http://127.0.0.1:2379 \
   --advertise-client-urls https://INTERNAL_IP:2379 \
   --initial-cluster-token etcd-cluster-0 \
-  --initial-cluster etc1=https://ETCD1:2380,etc2=https://ETCD2:2380 \
+  --initial-cluster ETCD_SERVERS \
   --initial-cluster-state new \
   --data-dir=/var/lib/etcd
 Restart=on-failure
