@@ -1,5 +1,3 @@
-localhost
-
 [etcd]
 ${etcd_hosts}
 

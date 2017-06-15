@@ -1,0 +1,137 @@
+- hosts: master,etcd,node
+  name: Gather facts from collectors
+  become: true
+  become_method: sudo
+  tasks:
+    - debug:
+        msg: "System {{ inventory_hostname[-1] | int - 1}}"
+- name: Create template files
+  hosts: localhost
+  connection: local
+  vars:
+    arr1: "{{ groups['master'] | map('extract', hostvars, ['ansible_eth0', 'ipv4', 'address'])  | join('\",\"') }}"
+    arr2: "{{ groups['node'] | map('extract', hostvars, ['ansible_eth0', 'ipv4', 'address'])  | join('\",\"') }}"
+    arr3: "{{ groups['etcd'] | map('extract', hostvars, ['ansible_eth0', 'ipv4', 'address'])  | join('\",\"') }}"
+    arr4: "{{ groups['etcd'] | join('\",\"') }}"
+    arr5: "{{ groups['master'] | join('\",\"') }}"
+    arr6: "{{ groups['node'] | join('\",\"') }}"
+    master_names: "{{ groups['master'] | list }}"
+    master1_ext_ip : "{{ hostvars[master_names[0]]['ansible_host'] }}"
+    etcd_ips: "{{ groups['etcd'] | map('extract', hostvars, ['ansible_eth0', 'ipv4', 'address'])  | list }}"
+    etcd_names: "{{ groups['etcd'] | list }}"
+    master_ips: "{{ groups['master'] | map('extract', hostvars, ['ansible_eth0', 'ipv4', 'address'])  | list }}"
+  tasks:
+    - name: Creates directory
+      file: path=templates state=directory
+    - name: Copy templates
+      command: cp -rf ../../templates .
+    - name: set fact etcd
+      set_fact: foo_item="{{ item.0 }}=https://{{ item.1}}:2380"
+      with_together:
+        - "{{ etcd_names }}"
+        - "{{ etcd_ips }}"
+      register: foo_result
+
+    - name: set fact etcd ip
+      set_fact: etcd_item="https://{{ item }}:2379"
+      with_items: "{{ etcd_ips }}"
+      register: etcd_result
+
+    - name: set fact master ip
+      set_fact: master_item="https://{{ item }}:6443"
+      with_items: "{{ master_ips }}"
+      register: master_result
+
+    - name: make a list
+      set_fact: foo="{{ foo_result.results | map(attribute='ansible_facts.foo_item') | join(',') }}"
+    - debug: var=foo
+    - name: make a list
+      set_fact: etcd_ip_list="{{ etcd_result.results | map(attribute='ansible_facts.etcd_item') | join(',') }}"
+    - name: make a list
+      set_fact: master_ip_list="{{ master_result.results | map(attribute='ansible_facts.master_item') | join(',') }}"
+
+    - replace:
+        path: templates/systemd/etcd.service
+        regexp: 'ETCD_SERVERS'
+        replace: "{{ foo }}"
+    - replace:
+        path: templates/systemd/kube-apiserver.service
+        regexp: 'ETCD_SERVERS_IP'
+        replace: "{{ etcd_ip_list }}"
+    - replace:
+        path: templates/systemd/kube-apiserver.service
+        regexp: 'APISERVER_COUNT'
+        replace: "{{ master_ips | length }}"
+    - replace:
+        path: templates/systemd/kubelet.service
+        regexp: 'APISERVERS_IP'
+        replace: "{{ master_ip_list }}"
+    - replace:
+        path: templates/kubeconfig
+        regexp: 'CONTROLLER_IP'
+        replace: "{{ hostvars[master_names[0]]['ansible_eth0']['ipv4']['address'] }}"
+    - replace:
+        path: templates/systemd/kube-proxy.service
+        regexp: 'APISERVER_IP1'
+        replace: "{{ hostvars[master_names[0]]['ansible_eth0']['ipv4']['address'] }}"
+    - replace:
+        path: templates/kubernetes-csr.json
+        regexp: 'KUBERNETES_HOSTS'
+        replace: "10.32.0.1\",\"{{arr5}}\", \"{{arr1 }}\", \"{{arr4 }}\", \"{{arr3 }}\", \"{{arr6 }}\",\"{{arr2 }}\",\"localhost\",\"127.0.0.1\",\"{{ master1_ext_ip }}"
+    - name: Create client cert
+      shell: "cfssl gencert -ca=../../certs/ca.pem -ca-key=../../certs/ca-key.pem -config=../../certs/ca-config.json -profile=kubernetes templates/kubernetes-csr.json | cfssljson -bare kubernetes"
+    - name: Move certs to temporary folder
+      command: mv kubernetes.pem templates/kubernetes.pem
+    - name: Move certs to temporary folder
+      command: mv kubernetes-key.pem templates/kubernetes-key.pem
+    - name: Move certs to temporary folder
+      command: mv kubernetes.csr templates/kubernetes.csr
+
+- name: Copy certificate to all
+  hosts: master,etcd,node
+  become: true
+  become_method: sudo
+  tasks:
+    - copy:
+        src: ../../certs/ca.pem
+        dest: /
+        owner: root
+        group: root
+        mode: 0644
+    - copy:
+        src: templates/kubernetes.pem
+        dest: /
+        owner: root
+        group: root
+        mode: 0644
+    - copy:
+        src: templates/kubernetes-key.pem
+        dest: /
+        owner: root
+        group: root
+        mode: 0644
+
+- include: setup_etcd.yml
+- include: setup_master.yml
+- include: setup_node.yml
+
+# CHECK WORKER
+- name: Check nodes
+  hosts: master-1
+  become: true
+  become_method: sudo
+  tasks:
+    - name: Check registered nodes
+      command: kubectl get nodes -o wide
+      register: kubenodes
+    - debug: var=kubenodes.stdout_lines
+
+#CLEANING UP TEMP DIRECTORIES ON LOCAL
+- name: Cleaning up
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Delete templates directory
+      file:
+        state: absent
+        path: templates/

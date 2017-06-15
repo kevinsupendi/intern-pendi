@@ -1,0 +1,20 @@
+- name: Creates directory /etc/etcd
+  file: path=/etc/etcd state=directory
+
+- stat:
+    path: /etc/etcd/ca.pem
+  register: ca
+- command: mv /tmp/ca.pem /etc/etcd/
+  when: ca.stat.exists == False
+
+- stat:
+    path: /etc/etcd/kubernetes-key.pem
+  register: key
+- command: mv /tmp/kubernetes-key.pem /etc/etcd/
+  when: key.stat.exists == False
+
+- stat:
+    path: /etc/etcd/kubernetes.pem
+  register: kube
+- command: mv /tmp/kubernetes.pem /etc/etcd/
+  when: kube.stat.exists == False

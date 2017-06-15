@@ -1,0 +1,13 @@
+- hosts: master
+  become: true
+  become_method: sudo
+  roles:
+    - kube_apiserver
+    - kube_controller_manager
+    - kube_scheduler
+  tasks:
+    - meta: flush_handlers
+    - name: Check master component
+      command: kubectl get componentstatuses
+      register: kubestatus
+    - debug: var=kubestatus.stdout_lines

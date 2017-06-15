@@ -1,0 +1,11 @@
+- name: start scheduler
+  systemd:
+    state: started
+    daemon_reload: yes
+    enabled: yes
+    name: kube-scheduler
+- name: restart scheduler
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: kube-scheduler

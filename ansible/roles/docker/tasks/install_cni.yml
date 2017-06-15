@@ -1,0 +1,10 @@
+- name: Creates directory /opt/cni
+  file: path=/opt/cni state=directory
+- name: Download CNI plugin
+  get_url:
+    url: https://storage.googleapis.com/kubernetes-release/network-plugins/cni-c864f0e1ea73719b8f4582402b0847064f9883b0.tar.gz
+    dest: /cni-c864f0e1ea73719b8f4582402b0847064f9883b0.tar.gz
+- unarchive:
+    src: /cni-c864f0e1ea73719b8f4582402b0847064f9883b0.tar.gz
+    dest: /opt/cni
+    remote_src: True

@@ -1,0 +1,2 @@
+#String for template
+kubernetes_hosts : "10.32.0.1\",\"{{ master_names | join('\",\"') }}\", \"{{ master_ips | join('\",\"') }}\", \"{{etcd_names | join('\",\"')}}\", \"{{etcd_ips | join('\",\"')}}\", \"{{node_names | join('\",\"') }}\",\"{{node_ips | join('\",\"') }}\",\"localhost\",\"127.0.0.1\",\"{{ master1_ext_ip }}"

@@ -1,0 +1,20 @@
+- name: Creates directory /var/lib/kubernetes
+  file: path=/var/lib/kubernetes state=directory
+
+- stat:
+    path: /var/lib/kubernetes/ca.pem
+  register: ca
+- command: mv /tmp/ca.pem /var/lib/kubernetes/
+  when: ca.stat.exists == False
+
+- stat:
+    path: /var/lib/kubernetes/kubernetes-key.pem
+  register: key
+- command: mv /tmp/kubernetes-key.pem /var/lib/kubernetes/
+  when: key.stat.exists == False
+
+- stat:
+    path: /var/lib/kubernetes/kubernetes.pem
+  register: kube
+- command: mv /tmp/kubernetes.pem /var/lib/kubernetes/
+  when: kube.stat.exists == False

@@ -1,0 +1,13 @@
+- include: check.yml
+- include: install_proxy.yml
+
+- name: Creates file proxy service
+  template:
+        src: "{{ role_path }}/templates/kube-proxy.service.j2"
+        dest: /etc/systemd/system/kube-proxy.service
+        owner: root
+        group: root
+        mode: 0644
+  notify:
+  - start proxy
+  - restart proxy

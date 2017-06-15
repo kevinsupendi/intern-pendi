@@ -27,12 +27,3 @@ resource "google_compute_firewall" "firewall" {
 
   source_ranges = ["0.0.0.0/0"]
 }
-
-resource "google_compute_route" "kube" {
-  count = "${var.num_node}"
-  name        = "kuberoute-${count.index}"
-  dest_range  = "10.200.${count.index}.0/24"
-  network     = "${google_compute_network.network.name}"
-  next_hop_ip = "${google_compute_instance.node.*.network_interface.0.address[count.index]}"
-  priority    = 1000
-}

@@ -1,0 +1,29 @@
+- name: Download Docker binary
+  get_url:
+    url: https://get.docker.com/builds/Linux/x86_64/docker-1.11.2.tgz
+    dest: /docker-1.11.2.tgz
+- unarchive:
+    src: /docker-1.11.2.tgz
+    dest: /
+    remote_src: True
+- name: Copy extracted files to /usr/bin
+  copy: src=/docker/docker dest=/usr/bin/ remote_src=yes directory_mode=yes
+- name: Copy extracted files to /usr/bin
+  copy: src=/docker/docker-containerd dest=/usr/bin/ remote_src=yes directory_mode=yes
+- name: Copy extracted files to /usr/bin
+  copy: src=/docker/docker-containerd-ctr dest=/usr/bin/ remote_src=yes directory_mode=yes
+- name: Copy extracted files to /usr/bin
+  copy: src=/docker/docker-containerd-shim dest=/usr/bin/ remote_src=yes directory_mode=yes
+- name: Copy extracted files to /usr/bin
+  copy: src=/docker/docker-runc dest=/usr/bin/ remote_src=yes directory_mode=yes
+
+- name: Changing docker permission
+  file: dest=/usr/bin/docker mode=a+x
+- name: Changing docker permission
+  file: dest=/usr/bin/docker-containerd mode=a+x
+- name: Changing docker permission
+  file: dest=/usr/bin/docker-containerd-shim mode=a+x
+- name: Changing docker permission
+  file: dest=/usr/bin/docker-containerd-ctr mode=a+x
+- name: Changing docker permission
+  file: dest=/usr/bin/docker-runc mode=a+x

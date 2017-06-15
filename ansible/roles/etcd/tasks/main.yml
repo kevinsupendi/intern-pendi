@@ -1,0 +1,26 @@
+- include: check.yml
+- include: install_etcd.yml
+
+- name: Creates directory /var/lib/etcd
+  file: path=/var/lib/etcd state=directory
+
+- name: set fact etcd
+  set_fact: etcd_item="{{ item.0 }}=https://{{ item.1}}:2380"
+  with_together:
+     - "{{ etcd_names }}"
+     - "{{ etcd_ips }}"
+  register: etcd_result
+- name: make a list
+  set_fact: etcd_servers="{{ etcd_result.results | map(attribute='ansible_facts.etcd_item') | join(',') }}"
+- debug: var=etcd_servers
+
+- name: Creates file etcd service
+  template:
+        src: "{{ role_path }}/templates/etcd.service.j2"
+        dest: /etc/systemd/system/etcd.service
+        owner: root
+        group: root
+        mode: 0644
+  notify:
+  - start etcd
+  - restart etcd

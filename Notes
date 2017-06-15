@@ -6,5 +6,5 @@ Notes on this Project :
 - I use sudo chmod 777 /var/run/docker.sock to hack with docker inside docker for jenkins easy configuration :p
 
 Notes on Ansible :
-- Sometimes cbr0 bridges ips are not configured correctly, creating errors in routing
-- Last part in setup_kube.yml host is not correct yet
+- Routing not yet automated
+- Must run init.yml once before running other files

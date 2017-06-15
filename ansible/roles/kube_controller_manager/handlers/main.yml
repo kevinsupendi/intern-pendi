@@ -1,0 +1,11 @@
+- name: start controller
+  systemd:
+    state: started
+    daemon_reload: yes
+    enabled: yes
+    name: kube-controller-manager
+- name: restart controller
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: kube-controller-manager

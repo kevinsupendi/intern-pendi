@@ -1,0 +1,17 @@
+- name: Create kubernetes.csr.json from template
+  template :
+    src: "{{ role_path }}/templates/kubernetes-csr.json.j2"
+    dest: "{{ role_path }}/files/kubernetes-csr.json"
+- name: Generate certificate
+  shell: "cfssl gencert -ca={{ role_path }}/files/ca.pem -ca-key={{ role_path }}/files/ca-key.pem -config={{ role_path }}/files/ca-config.json -profile=kubernetes {{ role_path }}/files/kubernetes-csr.json | cfssljson -bare kubernetes"
+  args:
+    chdir: "{{ role_path }}/files"
+  register: create
+- debug: var=create
+- name: Check certificate files
+  stat:
+    path: "{{ role_path }}/files/kubernetes.pem"
+  register: cert
+- fail:
+    msg: "Certificate not generated"
+  when: cert.stat.exists == False

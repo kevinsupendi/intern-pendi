@@ -1,0 +1,12 @@
+#hostnames
+etcd_names: "{{ groups['etcd'] | list }}"
+master_names: "{{ groups['master'] | list }}"
+node_names: "{{ groups['node'] | list }}"
+
+#internal IP
+etcd_ips : "{{ groups['etcd'] | map('extract', hostvars, ['internal_ip'])  | list }}"  
+master_ips : "{{ groups['master'] | map('extract', hostvars, ['internal_ip'])  | list }}"  
+node_ips : "{{ groups['node'] | map('extract', hostvars, ['internal_ip'])  | list }}"  
+
+#External IP for local kubectl access
+master1_ext_ip : "{{ hostvars[master_names[0]]['ansible_host'] }}"

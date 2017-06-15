@@ -1,0 +1,4 @@
+- include: init.yml
+- include: etcd.yml
+- include: master.yml
+- include: node.yml

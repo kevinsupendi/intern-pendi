@@ -1,0 +1,7 @@
+- hosts: node
+  become: true
+  become_method: sudo
+  roles:
+     - docker
+     - kubelet
+     - kube_proxy

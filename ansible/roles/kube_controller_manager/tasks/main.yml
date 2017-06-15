@@ -1,0 +1,13 @@
+- include: check.yml
+- include: install_controller.yml
+
+- name: Creates file controller service
+  template:
+        src: "{{ role_path }}/templates/kube-controller-manager.service.j2"
+        dest: /etc/systemd/system/kube-controller-manager.service
+        owner: root
+        group: root
+        mode: 0644
+  notify:
+  - start controller
+  - restart controller

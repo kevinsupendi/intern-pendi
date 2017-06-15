@@ -4,7 +4,7 @@ data "template_file" "etcd_ansible" {
   vars {
     index = "${count.index + 1}"
     name  = "etcd"
-    extra = " ansible_host=${element(split(",","${join(",", google_compute_instance.etcd.*.network_interface.0.access_config.0.assigned_nat_ip)}"),count.index)}"
+    extra = " ansible_host=${element(split(",","${join(",", google_compute_instance.etcd.*.network_interface.0.access_config.0.assigned_nat_ip)}"),count.index)} internal_ip=${element(split(",","${join(",", google_compute_instance.etcd.*.network_interface.0.address)}"),count.index)}"
   }
 }
 
@@ -14,7 +14,7 @@ data "template_file" "master_ansible" {
   vars {
     index = "${count.index + 1}"
     name  = "master"
-    extra = " ansible_host=${element(split(",","${join(",", google_compute_instance.master.*.network_interface.0.access_config.0.assigned_nat_ip)}"),count.index)}"
+    extra = " ansible_host=${element(split(",","${join(",", google_compute_instance.master.*.network_interface.0.access_config.0.assigned_nat_ip)}"),count.index)} internal_ip=${element(split(",","${join(",", google_compute_instance.master.*.network_interface.0.address)}"),count.index)}"
   }
 }
 
@@ -24,7 +24,7 @@ data "template_file" "node_ansible" {
   vars {
     index = "${count.index + 1}"
     name  = "node"
-    extra = " ansible_host=${element(split(",","${join(",", google_compute_instance.node.*.network_interface.0.access_config.0.assigned_nat_ip)}"),count.index)}"
+    extra = " ansible_host=${element(split(",","${join(",", google_compute_instance.node.*.network_interface.0.access_config.0.assigned_nat_ip)}"),count.index)} internal_ip=${element(split(",","${join(",", google_compute_instance.node.*.network_interface.0.address)}"),count.index)}"
   }
 }
 

@@ -1,0 +1,7 @@
+- name: Download kube-apiserver binary
+  get_url:
+    url: https://storage.googleapis.com/kubernetes-release/release/v1.6.4/bin/linux/amd64/kube-apiserver
+    dest: /usr/bin/kube-apiserver
+
+- name: Changing kube-apiserver permission
+  file: dest=/usr/bin/kube-apiserver mode=a+x
