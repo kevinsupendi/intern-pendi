@@ -24,3 +24,6 @@ Notes, hacks and limitations [Notes](Notes.md)
 
 ### Questions (WIP) 
 [Questions](Questions.md)
+
+### Presentation
+[Google Slides](https://docs.google.com/presentation/d/1tl7aIaKDEqyuU9VEx__fnUklybM0u7ZOq-AM2w0h4pA/edit?usp=sharing)
