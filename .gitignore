@@ -1,0 +1,6 @@
+*.tfstate
+*.tfstate.*
+*.retry
+*.pem
+certs/
+ansible/roles/certs/files/

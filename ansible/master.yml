@@ -7,6 +7,12 @@
     - kube_scheduler
   tasks:
     - meta: flush_handlers
+    - name: ensure kube-apiserver is running
+      systemd: name=kube-apiserver state=started enabled=yes
+    - name: ensure kube-controller-manager is running
+      systemd: name=kube-controller-manager state=started enabled=yes
+    - name: ensure kube-scheduler is running
+      systemd: name=kube-scheduler state=started enabled=yes
     - name: Check master component
       command: kubectl get componentstatuses
       register: kubestatus

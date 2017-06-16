@@ -2,6 +2,17 @@
   become: true
   become_method: sudo
   roles:
+     - flannel
      - docker
      - kubelet
      - kube_proxy
+  tasks:
+    - meta: flush_handlers
+    - name: ensure flannel is running
+      systemd: name=flannel state=started enabled=yes
+    - name: ensure docker is running
+      systemd: name=docker state=started enabled=yes
+    - name: ensure kubelet is running
+      systemd: name=kubelet state=started enabled=yes
+    - name: ensure kube-proxy is running
+      systemd: name=kube-proxy state=started enabled=yes

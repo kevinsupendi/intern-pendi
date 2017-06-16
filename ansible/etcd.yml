@@ -5,7 +5,12 @@
     - etcd
   tasks:
     - meta: flush_handlers
+    - name: ensure etcd is running
+      systemd: name=etcd state=started enabled=yes
     - name: Check etcd cluster
       command: etcdctl --ca-file=/etc/etcd/ca.pem --cert-file=/etc/etcd/kubernetes.pem --key-file=/etc/etcd/kubernetes-key.pem cluster-health 
+      ignore_errors: yes
       register: etc
     - debug: var=etc.stdout_lines
+    - name: Create flannel configuration
+      command: "etcdctl --ca-file=/etc/etcd/ca.pem --cert-file=/etc/etcd/kubernetes.pem --key-file=/etc/etcd/kubernetes-key.pem set /coreos.com/network/config '{ \"Network\": \"10.200.0.0/16\", \"Backend\": {\"Type\": \"vxlan\"}}'"

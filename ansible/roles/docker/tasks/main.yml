@@ -1,7 +1,6 @@
 - include: check.yml
 - include: install_docker.yml
 - include: install_cni.yml
-- include: bridge.yml
 
 - name: Copy file docker service
   copy:
