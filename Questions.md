@@ -5,3 +5,4 @@
 - Service yg multiple pod modelny aktif pasif atau aktif aktif? algonya? Semuanya aktif, kube-proxy memakai probability di iptables, jadi gak round robin, tetapi random
 - Jenkins sharing volume? slaveny gk lgsg mati? Kalo slave gk langsung mati hrus config sendiri, volume sharing bisa pakai NFS atau PV, tetapi belum dicoba, harus efektif juga sharingnya.
 - GCP IP limitation
+- How secure is etcd? both storage and communication

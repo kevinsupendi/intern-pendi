@@ -132,7 +132,6 @@ metadata:
   labels:
     app: kubedns
 spec:
-  type: NodePort
   selector:
      app: kubedns
   clusterIP: 10.32.0.10 

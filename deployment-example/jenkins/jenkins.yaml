@@ -31,18 +31,25 @@ spec:
               name: jenkins
               key: options
         volumeMounts:
-        - mountPath: /home/kevinsupendi96/jenkins_home/
+        - mountPath: /var/jenkins_home
           name: jenkins-home
           readOnly: false
         resources:
           limits:
             cpu: 500m
-            memory: 1500Mi
+            memory: 2500Mi
           requests:
             cpu: 500m
-            memory: 1500Mi
+            memory: 2500Mi
       volumes:
       - name: jenkins-home
         hostPath:
-          path: "/home/kevinsupendi96/jenkins_home/"
+          path: /home/jenkins
+      nodeSelector:
+        reserved: jenkins
+      tolerations: 
+      - key: "only"
+        operator: "Equal"
+        value: "jenkins"
+        effect: "NoSchedule"
 # [END jenkins_deployment]

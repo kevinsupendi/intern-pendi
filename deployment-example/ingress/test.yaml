@@ -1,0 +1,31 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    ingress.kubernetes.io/rewrite-target: /
+    ingress.kubernetes.io/ssl-redirect: "false"
+  name: test-ingress
+  namespace: kube-system
+spec:
+  backend:
+    serviceName: default-http-backend
+    servicePort: 80
+  rules:
+  - http:
+      paths:
+      - path: /dashboard/
+        backend:
+          serviceName: kubernetes-dashboard
+          servicePort: 80
+      - path: /grafana/
+        backend:
+          serviceName: monitoring-grafana
+          servicePort: 80
+      - path: /weave/
+        backend:
+          serviceName: weave-scope-app
+          servicePort: 80
+      - path: /kibana/
+        backend:
+          serviceName: kibana-logging
+          servicePort: 5601
