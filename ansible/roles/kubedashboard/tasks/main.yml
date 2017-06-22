@@ -1,0 +1,9 @@
+- copy:
+    src: "{{ role_path }}/files/kube-dashboard.yaml"
+    dest: /tmp
+    owner: root
+    group: root
+    mode: 0644
+- name: Deploy addons dashboard
+  command: kubectl apply -f /tmp/kube-dashboard.yaml
+  ignore_errors: yes

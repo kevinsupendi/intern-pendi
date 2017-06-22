@@ -1,0 +1,48 @@
+- copy:
+    src: "{{ role_path }}/files/jenkins.yaml"
+    dest: /tmp
+    owner: root
+    group: root
+    mode: 0644
+- copy:
+    src: "{{ role_path }}/files/options"
+    dest: /tmp
+    owner: root
+    group: root
+    mode: 0644
+- copy:
+    src: "{{ role_path }}/files/jenkins-ingress.yaml"
+    dest: /tmp
+    owner: root
+    group: root
+    mode: 0644
+- copy:
+    src: "{{ role_path }}/files/svc_jenkins.yaml"
+    dest: /tmp
+    owner: root
+    group: root
+    mode: 0644
+- copy:
+    src: "{{ role_path }}/files/jenkins_pvc.yaml"
+    dest: /tmp
+    owner: root
+    group: root
+    mode: 0644
+- name: Create Jenkins namespace
+  command: kubectl create namespace jenkins
+  ignore_errors: yes
+- name: Deploy Jenkins PVC
+  command: kubectl apply -f /tmp/jenkins_pvc.yaml
+  ignore_errors: yes
+- name: Deploy Jenkins service
+  command: kubectl apply -f /tmp/svc_jenkins.yaml
+  ignore_errors: yes
+- name: Create Jenkins secret
+  command: kubectl create secret generic jenkins --from-file=/tmp/options --namespace=jenkins
+  ignore_errors: yes
+- name: Deploy Jenkins pod
+  command: kubectl apply -f /tmp/jenkins.yaml
+  ignore_errors: yes
+- name: Deploy Ingress rule
+  command: kubectl apply -f /tmp/jenkins-ingress.yaml
+  ignore_errors: yes

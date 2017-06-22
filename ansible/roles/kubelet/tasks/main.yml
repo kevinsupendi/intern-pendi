@@ -9,6 +9,13 @@
         group: root
         mode: 0644
 
+- copy:
+    src: "{{ role_path }}/files/gce.conf"
+    dest: /var/lib/kubernetes/
+    owner: root
+    group: root
+    mode: 0644
+
 - name: set fact master ip for templates
   set_fact: master_item="https://{{ item }}:6443"
   with_items: "{{ master_ips }}"

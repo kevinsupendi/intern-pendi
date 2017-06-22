@@ -1,0 +1,9 @@
+- copy:
+    src: "{{ role_path }}/files/elastic_pvc.yaml"
+    dest: /tmp
+    owner: root
+    group: root
+    mode: 0644
+- name: Deploy Elastic PVC
+  command: kubectl apply -f /tmp/elastic_pvc.yaml
+  ignore_errors: yes

@@ -14,6 +14,12 @@
     owner: root
     group: root
     mode: 0644
+- copy:
+    src: "{{ role_path }}/files/gce.conf"
+    dest: /var/lib/kubernetes/
+    owner: root
+    group: root
+    mode: 0644
 
 - name: set fact etcd ip
   set_fact: etcd_item="https://{{ item }}:2379"

@@ -4,11 +4,13 @@ Documentation=https://github.com/GoogleCloudPlatform/kubernetes
 
 [Service]
 ExecStart=/usr/bin/kube-controller-manager \
-  --allocate-node-cidrs=false \
+  --allocate-node-cidrs=true \
   --cluster-cidr=10.200.0.0/16 \
   --cluster-name=kubernetes \
+  --cloud-provider=gce \
+  --cloud-config=/var/lib/kubernetes/gce.conf \
   --leader-elect=true \
-  --master=http://{{ internal_ip }}:8080 \
+  --kubeconfig=/var/lib/kubernetes/kubeconfig \
   --root-ca-file=/var/lib/kubernetes/ca.pem \
   --service-account-private-key-file=/var/lib/kubernetes/kubernetes-key.pem \
   --service-cluster-ip-range=10.32.0.0/24 \

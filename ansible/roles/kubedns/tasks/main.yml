@@ -1,0 +1,9 @@
+- copy:
+    src: "{{ role_path }}/files/kubedns.yaml"
+    dest: /tmp
+    owner: root
+    group: root
+    mode: 0644
+- name: Deploy addons dns
+  command: kubectl apply -f /tmp/kubedns.yaml
+  ignore_errors: yes

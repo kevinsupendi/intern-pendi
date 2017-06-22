@@ -2,4 +2,13 @@
   become: true
   become_method: sudo
   roles:
-    - addons
+    - kubedns
+    - kubedashboard
+    - storageclass
+    - persistentvolume
+    - ingress
+    - heapster
+    - fluentd
+    - jenkins
+
+    

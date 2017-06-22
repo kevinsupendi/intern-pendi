@@ -1,0 +1,27 @@
+- copy:
+    src: "{{ role_path }}/files/grafana.yaml"
+    dest: /tmp
+    owner: root
+    group: root
+    mode: 0644
+- copy:
+    src: "{{ role_path }}/files/heapster.yaml"
+    dest: /tmp
+    owner: root
+    group: root
+    mode: 0644
+- copy:
+    src: "{{ role_path }}/files/influxdb.yaml"
+    dest: /tmp
+    owner: root
+    group: root
+    mode: 0644
+- name: Deploy Heapster
+  command: kubectl apply -f /tmp/heapster.yaml
+  ignore_errors: yes
+- name: Deploy Influxdb
+  command: kubectl apply -f /tmp/influxdb.yaml
+  ignore_errors: yes
+- name: Deploy Grafana
+  command: kubectl apply -f /tmp/grafana.yaml
+  ignore_errors: yes
