@@ -9,5 +9,3 @@
 
 4. Run command from ansible/
     ansible-playbook  -i inventories/inv.ini --private-key=~/.ssh/google_compute_engine kubernetes.yml
-
-5. Kubernetes cluster is set, but must set routing manually

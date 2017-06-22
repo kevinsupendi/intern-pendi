@@ -9,8 +9,8 @@ resource "google_compute_subnetwork" "subnet" {
   region        = "${var.gce_region}"
 }
 
-resource "google_compute_firewall" "firewall" {
-  name = "allowall"
+resource "google_compute_firewall" "fw" {
+  name = "allow-all"
   network = "${google_compute_network.network.name}"
 
   allow {

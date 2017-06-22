@@ -25,6 +25,7 @@ resource "google_compute_instance" "etcd" {
   }
  
   can_ip_forward = "true"
+
 }
 
 // Create master instances
@@ -47,6 +48,10 @@ resource "google_compute_instance" "master" {
   }
  
   can_ip_forward = "true"
+  
+  service_account {
+    scopes = ["compute-rw", "storage-rw"]
+  }
 }
 
 // Create node instances
@@ -69,4 +74,7 @@ resource "google_compute_instance" "node" {
   }
  
   can_ip_forward = "true"
+  service_account {
+    scopes = ["compute-rw", "storage-rw"]
+  }
 }

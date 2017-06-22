@@ -1,10 +1,16 @@
 Notes on this Project :
-- Kubernetes cluster created using Kubernetes binary v1.6.4, using systemd, installed in Ubuntu 16.04 image from GCE
-- Jenkins mounted on host machine (/home/kevinsupendi96/jenkins in this case), not on persistent disk. If the pod is deleted, all jenkins configuration will be deleted as well
-- I use kubenet network plugin (default), that creates new cbr0 bridge when deploying pods. Make sure docker in each node connect to cbr0 bridge
+- Kubernetes cluster created using Kubernetes binary v1.6.4, using systemd, installed in Ubuntu 15.10 image, tested on GCE
 - When configuring Jenkins build executor, use 'jnlp' for container name and pod name
-- I use sudo chmod 777 /var/run/docker.sock to hack with docker inside docker for jenkins easy configuration :p
+- I use sudo chmod 777 /var/run/docker.sock to hack with docker permission, because jenkins slave cannot use the socket as jenkins user :p
+- Communication is authenticated using client CA and token. Any user calling API server must provide the credentials. Kubernetes component like kubelet, kube-proxy use kubeconfig to provide those credentials
+- To access cloud provider features like gce or aws dynamic storage provisioning, one must set the argument --cloud-provider and --cloud-config to kubelet, kube-apiserver, and kube-controller-manager systemd files. Make sure each instance have access to service account, it should already be automated in terraform though 
 
 Notes on Ansible :
-- Routing not yet automated
 - Must run init.yml once before running other files
+
+Cloud Provider config :
+- kube-controller-manager argument allocate-node-cidrs must be true to configure cloud routing
+
+Persistent Volumes :
+- Still bugged when node dies, volume cannot be automatically detached from pod, must restart node or delete node
+- Default reclaim policy for dynamic provisioning is delete, but only if pod is not deployed anymore, so data still persist for pod error/restart
