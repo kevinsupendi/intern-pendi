@@ -8,11 +8,6 @@ Terraform is used for creating VMs in GCE, then configuration is automated by An
 This project used Ubuntu 15.10. The result should be reproducible with any Linux machine supporting systemd services.
 
 
-### Project Directory
-If you want to know more about the project directory structures, here is a brief explanation for each folder.
-[Explanation](Documentation/dir.md)
-
-
 ### Quickstart
 Follow this instruction to create Kubernetes cluster automatically with Ansible and Terraform.
 [here](Documentation/quickstart.md)
@@ -23,8 +18,9 @@ Create Kubernetes cluster manually with this steps
 [here](Documentation/manual_setup.md)
 
 
-### After setting up (WIP)
-Assuming you have finished the setup and have a working kubernetes cluster, you can start deploying applications on them. 
+### After setting up
+Assuming you have finished the setup and have a working kubernetes cluster, you can start deploying applications on them.
+There is an ansible script called addons.yml. Run the script after cluster configuration is finished to deploy the addons automatically. 
 Here is a few suggestions of useful addons and Kubernetes resources :
 - [DNS](Documentation/addons/dns.md)
 - [Kubernetes Dashboard (Optional Heapster)](Documentation/addons/dashboard.md)
