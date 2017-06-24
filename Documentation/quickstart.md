@@ -134,7 +134,7 @@ You should see that the nodes are registered and in ready state.
 
 
 ### Testing
-Eventhough your nodes are ready, you should test if your Service and Deployment can work well.
+Even though your nodes are ready, you should test if your Service and Deployment can work well.
 
 1. Run this command to deploy nginx application
 
@@ -174,10 +174,10 @@ Eventhough your nodes are ready, you should test if your Service and Deployment 
 ### What's next ?
 Your Kubernetes should be running well and has been tested. Now the next step is deploy some addons to extend
 Kubernetes functionality
-- [DNS](Documentation/addons/dns.md)
-- [Kubernetes Dashboard (Optional Heapster)](Documentation/addons/dashboard.md)
-- [Logging with EFK stack (ElasticSearch + Fluentd + Kibana)](Documentation/addons/logging.md)
-- [Monitoring Resource (Heapster + InfluxDB + Grafana)](Documentation/addons/monitor.md)
-- [Ingress resource](Documentation/addons/ingress.md)
-- [Jenkins](Documentation/addons/jenkins.md)
-- [StorageClass](Documentation/addons/storage.md)
+- [DNS](addons/dns.md)
+- [Kubernetes Dashboard (Optional Heapster)](addons/dashboard.md)
+- [Logging with EFK stack (ElasticSearch + Fluentd + Kibana)](addons/logging.md)
+- [Monitoring Resource (Heapster + InfluxDB + Grafana)](addons/monitor.md)
+- [Ingress resource](addons/ingress.md)
+- [Jenkins](addons/jenkins.md)
+- [StorageClass](addons/storage.md)
