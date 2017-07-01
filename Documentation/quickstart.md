@@ -107,6 +107,12 @@ Make sure ca.pem, kubernetes.pem and kubernetes-key.pem exist in ansible/roles/c
 be used by Ansible to generate certificates
 
 
+### Securing Kubernetes
+In this project I use token authentication for Kubelet, Scheduler, and Controller-manager. Change tokens value in ansible/group_vars/all.
+Apiserver will authenticate user written in ansible/roles/kube_apiserver/files/authorization-policy.jsonl.
+Each kubernetes component will present token and user to Apiserver using kubeconfig (e.g. kubelet will use ansible/roles/kubelet/templates/kubeconfig.j2 for its authentication)
+
+
 ### Run Ansible script
 Ansible will configure the machine which is provided in inventories/inv.ini, the final result is a working kubernetes cluster.
 the script kubernetes.yml is divided into 4 parts, init.yml, etcd.yml, master.yml and node.yml.

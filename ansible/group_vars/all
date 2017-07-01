@@ -10,3 +10,8 @@ node_ips : "{{ groups['node'] | map('extract', hostvars, ['internal_ip'])  | lis
 
 #External IP for local kubectl access
 master1_ext_ip : "{{ hostvars[master_names[0]]['ansible_host'] }}"
+
+#Security token
+kubelet_token : "aea9e9bf34e2c4757ff17cdd7c0b346a"
+scheduler_token : "bca9e9bf34e2c4757ff17cdd7c0b346a"
+controller_token : "abc9e9bf34e2c4757ff17cdd7c0b346a"

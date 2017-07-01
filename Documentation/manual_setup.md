@@ -1,24 +1,28 @@
 # KUBERNETES THE HARD WAY ON LINUX
 
+
 ## Recreate using Google Compute Engine VMs
 
+
 References :
+
+
 https://github.com/kelseyhightower/kubernetes-the-hard-way/blob/master/docs/06-kubernetes-worker.md
 https://github.com/Praqma/LearnKubernetes/blob/master/kamran/Kubernetes-The-Hard-Way-on-BareMetal.md
 
+
 ### Steps to do :
 
-1. Setup network, design network, configure firewall
-2. Design kubernetes architecture (H/A or not)
-3. Create VMs
+1. Setup network, design network, configure firewall (can be automated with Terraform)
+2. Design kubernetes architecture (H/A or not, decide number of etcd, master and node components)
+3. Create VMs (can be automated with Terraform)
 
 	There will be :
 	- etcd component
 	- Master component (apiserver, scheduler, controller-manager)
-	- Worker component (kubelet, kube-proxy, docker)
-	- Load Balancer (optional)
+	- Node component (kubelet, kube-proxy, docker)
 
-4. Generate certificates if necessary (HTTPS)
+4. Generate certificates for HTTPS
 5. Copy certs to all components
 
 **etcd**

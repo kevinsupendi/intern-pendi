@@ -7,9 +7,9 @@
     owner: root
     group: root
     mode: 0644
-- copy:
-    src: "{{ role_path }}/files/kubeconfig"
-    dest: /var/lib/kubernetes/
+- template:
+    src: "{{ role_path }}/templates/kubeconfig.j2"
+    dest: /var/lib/kubernetes/kubeconfig
     owner: root
     group: root
     mode: 0644

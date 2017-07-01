@@ -1,15 +1,15 @@
 - include: check.yml
 - include: install_scheduler.yml
 
-- copy:
-    src: "{{ role_path }}/files/kubeconfig"
-    dest: /var/lib/kubernetes/
+- template:
+    src: "{{ role_path }}/templates/kubeconfig.j2"
+    dest: /var/lib/kubernetes/kubeconfig
     owner: root
     group: root
     mode: 0644
 
 - name: Creates file scheduler service
-  template:
+  copy:
         src: "{{ role_path }}/files/kube-scheduler.service"
         dest: /etc/systemd/system/
         owner: root

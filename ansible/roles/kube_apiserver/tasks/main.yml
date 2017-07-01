@@ -2,9 +2,9 @@
 - include: install_apiserver.yml
 - include: install_kubectl.yml
 
-- copy:
-    src: "{{ role_path }}/files/token.csv"
-    dest: /var/lib/kubernetes/
+- template:
+    src: "{{ role_path }}/templates/token.csv.j2"
+    dest: /var/lib/kubernetes/token.csv
     owner: root
     group: root
     mode: 0644
