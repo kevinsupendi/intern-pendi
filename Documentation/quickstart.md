@@ -1,8 +1,8 @@
 ## Quickstart
 
 ### Prerequisites
-- Install Terraform (Recommended version : >0.9.8)[link](https://www.terraform.io/intro/getting-started/install.html)
-- Install Ansible (Recommended version : >2.3.0.0)[link](http://docs.ansible.com/ansible/intro_installation.html)
+- Install Terraform (Recommended version : >0.9.8) [link](https://www.terraform.io/intro/getting-started/install.html)
+- Install Ansible (Recommended version : >2.3.0.0) [link](http://docs.ansible.com/ansible/intro_installation.html)
 
 ### Create the machines with Terraform
 Create VMs (I used GCE in this project) using terraform. Terraform can create and destroy instances using the same .tf files.
@@ -126,7 +126,20 @@ be used by Ansible to generate certificates
 
 
 ### Securing Kubernetes
-In this project I use token authentication for Kubelet, Scheduler, and Controller-manager. Change tokens value in ansible/group_vars/all.
+In this project I use token authentication for Kubelet, Scheduler, and Controller-manager. 
+Change tokens value in ansible/group_vars/all.
+Run this command to generate token value
+
+
+```
+head -c 16 /dev/urandom | od -An -t x | tr -d ' '
+```
+
+Run this script 3 times and replace token value for kubelet, scheduler and controller.
+
+More information about kubernetes token can be found [here](https://kubernetes.io/docs/admin/kubelet-tls-bootstrapping/)
+
+
 Apiserver will authenticate user written in ansible/roles/kube_apiserver/files/authorization-policy.jsonl.
 Each kubernetes component will present token and user to Apiserver using kubeconfig (e.g. kubelet will use ansible/roles/kubelet/templates/kubeconfig.j2 for its authentication)
 
