@@ -25,7 +25,7 @@ variable "gce_zone" {
 
 # GCE image name.
 variable "gce_image" {
-  default = "ubuntu-os-cloud/ubuntu-1510-wily-v20151021"
+  default = "ubuntu-os-cloud/ubuntu-1604-lts"
 }
 
 # GCE network name.
