@@ -129,7 +129,7 @@ At this point, you should have instances and network created in Google Cloud Pla
     ca-key.pem
     ca.pem
     ```
-Make sure ca.pem, kubernetes.pem and kubernetes-key.pem exist in ansible/roles/certs/files directory, as those files will
+Make sure ca.pem, ca-key.pem and ca-config.json exist in ansible/roles/certs/files directory, as those files will
 be used by Ansible to generate certificates
 
 
