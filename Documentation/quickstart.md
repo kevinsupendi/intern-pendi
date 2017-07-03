@@ -1,5 +1,9 @@
 ## Quickstart
 
+### Prerequisites
+- Install Terraform (Recommended version : >0.9.8)[link](https://www.terraform.io/intro/getting-started/install.html)
+- Install Ansible (Recommended version : >2.3.0.0)[link](http://docs.ansible.com/ansible/intro_installation.html)
+
 ### Create the machines with Terraform
 Create VMs (I used GCE in this project) using terraform. Terraform can create and destroy instances using the same .tf files.
 

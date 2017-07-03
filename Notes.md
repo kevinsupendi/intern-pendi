@@ -1,7 +1,7 @@
 ## Notes
 
 ### Notes on this Project :
-- Kubernetes cluster created using Kubernetes binary v1.6.4, using systemd, installed in Ubuntu 15.10 image, tested on GCE
+- Kubernetes cluster created using Kubernetes binary v1.6.4, using systemd, installed in Ubuntu 16.04 LTS image, tested on GCE
 - When configuring Jenkins build executor, use 'jnlp' for container name and pod name
 - I use sudo chmod 777 /var/run/docker.sock to hack with docker permission, because jenkins slave cannot use the socket as jenkins user :p
 - Communication is authenticated using client CA and token. Any user calling API server must provide the credentials. Kubernetes component like kubelet, kube-proxy use kubeconfig to provide those credentials

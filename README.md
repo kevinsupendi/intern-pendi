@@ -5,7 +5,7 @@
 
 Kubernetes Cluster creation involving Ansible, Terraform and Google Cloud Platform. 
 Terraform is used for creating VMs in GCE, then configuration is automated by Ansible.
-This project used Ubuntu 15.10. The result should be reproducible with any Linux machine supporting systemd services.
+This project used Ubuntu 16.04 LTS. The result should be reproducible with any Linux machine supporting systemd services.
 
 
 ### Quickstart
