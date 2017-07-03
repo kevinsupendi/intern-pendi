@@ -35,6 +35,8 @@ resource "google_compute_instance" "master" {
   machine_type = "n1-standard-1"
   zone         = "${var.gce_zone}"
 
+  tags = ["node"]
+
   disk {
     image = "${var.gce_image}"
     size = 10
@@ -50,7 +52,7 @@ resource "google_compute_instance" "master" {
   can_ip_forward = "true"
   
   service_account {
-    scopes = ["compute-rw", "storage-rw"]
+    scopes = ["compute-rw"]
   }
 }
 
@@ -60,6 +62,8 @@ resource "google_compute_instance" "node" {
   name         = "node-${count.index + 1}"
   machine_type = "n1-standard-1"
   zone         = "${var.gce_zone}"
+
+  tags = ["node"]
 
   disk {
     image = "${var.gce_image}"
@@ -75,6 +79,6 @@ resource "google_compute_instance" "node" {
  
   can_ip_forward = "true"
   service_account {
-    scopes = ["compute-rw", "storage-rw"]
+    scopes = ["compute-rw"]
   }
 }

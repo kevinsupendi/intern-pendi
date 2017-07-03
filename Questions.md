@@ -41,3 +41,4 @@ When Secrets reach the node, it is saved in tmpfs, so it never hit node disks.
 However, because Secrets is Kubernetes object, it is also saved in etcd.
 Etcd communication can be configured to use TLS, but Kubernetes API Object is saved in plaintext, including secrets.
 It is also saved in disk, so admin should consider delete disk after use or encrypt it. 
+[Update] Etcd encryption has been introduced in Kubernetes 1.7 as alpha feature
