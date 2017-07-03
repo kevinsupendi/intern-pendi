@@ -18,7 +18,29 @@ Create VMs (I used GCE in this project) using terraform. Terraform can create an
     terraform apply
     ```
 
-5. If the command ran succesfully, it should produce output with green colors. Copy terraform output to ansible/inventories/inv.ini
+5. If the command ran succesfully, it should produce output similar to this. 
+
+    ```
+    ansible_inventory = [etcd]
+    etcd-1  ansible_host=xx.xx.xx.xx internal_ip=xx.xx.xx.xx
+    .
+    .
+    etcd-x  ansible_host=xx.xx.xx.xx internal_ip=xx.xx.xx.xx
+
+    [master]
+    master-1  ansible_host=xx.xx.xx.xx internal_ip=xx.xx.xx.xx
+    .
+    .
+    master-x  ansible_host=xx.xx.xx.xx internal_ip=xx.xx.xx.xx
+
+    [node]
+    node-1  ansible_host=xx.xx.xx.xx internal_ip=xx.xx.xx.xx
+    .
+    .
+    node-x  ansible_host=xx.xx.xx.xx internal_ip=xx.xx.xx.xx
+    ```
+
+Copy terraform output to ansible/inventories/inv.ini excluding the 'ansible_inventory =' part.
 
 At this point, you should have instances and network created in Google Cloud Platform, you can check in console.
 
