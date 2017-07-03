@@ -139,6 +139,13 @@ Apiserver will authenticate user written in ansible/roles/kube_apiserver/files/a
 Each kubernetes component will present token and user to Apiserver using kubeconfig (e.g. kubelet will use ansible/roles/kubelet/templates/kubeconfig.j2 for its authentication)
 
 
+### Setting SSH keys
+Create SSH keys to connect to VM instances.
+For GCE : [link](https://cloud.google.com/compute/docs/instances/connecting-to-instance)
+
+Use this key as a `--private-key` parameter when running Ansible script
+
+
 ### Run Ansible script
 Ansible will configure the machine which is provided in inventories/inv.ini, the final result is a working kubernetes cluster.
 the script kubernetes.yml is divided into 4 parts, init.yml, etcd.yml, master.yml and node.yml.
