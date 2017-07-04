@@ -15,3 +15,6 @@ master1_ext_ip : "{{ hostvars[master_names[0]]['ansible_host'] }}"
 kubelet_token : ""
 scheduler_token : ""
 controller_token : ""
+
+#Project name
+project_name : "intern-kevin"

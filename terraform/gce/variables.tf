@@ -1,6 +1,6 @@
 # Number of instances to start.
 variable "num_etcd" {
-   default = "3"
+   default = "1"
 }
 
 # Number of instances to start.

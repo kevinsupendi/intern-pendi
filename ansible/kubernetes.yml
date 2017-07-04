@@ -2,4 +2,3 @@
 - include: etcd.yml
 - include: master.yml
 - include: node.yml
-- include: addons.yml

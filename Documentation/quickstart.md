@@ -7,7 +7,7 @@
 
 ### Setting SSH keys
 Create SSH keys to connect to VM instances.
-If you have existing key pairs (~/.ssh/id_rsa for example) then you can skip this step and use that key
+If you have existing key pairs (~/.ssh/id_rsa for example) then you can skip this step and use that key.
 If you want to generate new public private key pair, run this command :
 
 ```
@@ -97,7 +97,7 @@ At this point, you should have instances and network created in Google Cloud Pla
 
     ### Set up a Certificate Authority
 
-3. Create a CA configuration file:
+3. Create a CA configuration file :
 
     ```
     echo '{
@@ -134,7 +134,7 @@ At this point, you should have instances and network created in Google Cloud Pla
       ]
     }' > ca-csr.json
     ```
-5. Generate a CA certificate and private key:
+5. Generate a CA certificate and private key :
 
     ```
     cfssl gencert -initca ca-csr.json | cfssljson -bare ca
@@ -169,6 +169,10 @@ Apiserver will authenticate user written in ansible/roles/kube_apiserver/files/a
 Each kubernetes component will present token and user to Apiserver using kubeconfig (e.g. kubelet will use ansible/roles/kubelet/templates/kubeconfig.j2 for its authentication)
 
 
+### Change GCP Project
+Change project name value in ansible/group_vars/all to your project name.
+
+
 ### Run Ansible script
 Ansible will configure the machine which is provided in inventories/inv.ini, the final result is a working kubernetes cluster.
 the script kubernetes.yml is divided into 4 parts, init.yml, etcd.yml, master.yml and node.yml.
@@ -183,8 +187,8 @@ You can run the script individually, but each machine has to run init.yml once.
 2. (Optional) If you use password protected private key, you can run this command to avoid retyping password (assuming your key is ~/.ssh/id_rsa)
 
     ```
-    $ ssh-agent bash
-    $ ssh-add ~/.ssh/id_rsa
+    ssh-agent bash
+    ssh-add ~/.ssh/id_rsa
     ```
 
 
@@ -234,7 +238,7 @@ Even though your nodes are ready, you should test if your Service and Deployment
 
     You should see Port with value 80:30000ish
 
-5. Test the nginx service using cURL or web browser:
+5. Test the nginx service using cURL or web browser :
 
     ```
     curl http://${NODE_PUBLIC_IP}:${NODE_PORT}

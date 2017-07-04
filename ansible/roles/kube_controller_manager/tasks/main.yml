@@ -1,9 +1,9 @@
 - include: check.yml
 - include: install_controller.yml
 
-- copy:
-    src: "{{ role_path }}/files/gce.conf"
-    dest: /var/lib/kubernetes/
+- template:
+    src: "{{ role_path }}/templates/gce.conf.j2"
+    dest: /var/lib/kubernetes/gce.conf
     owner: root
     group: root
     mode: 0644
