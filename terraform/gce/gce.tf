@@ -26,6 +26,10 @@ resource "google_compute_instance" "etcd" {
  
   can_ip_forward = "true"
 
+  metadata {
+    block-project-ssh-keys="true"
+    ssh-keys = "pendi:${file("~/.ssh/id_rsa.pub")}"
+  }
 }
 
 // Create master instances
@@ -54,6 +58,11 @@ resource "google_compute_instance" "master" {
   service_account {
     scopes = ["compute-rw"]
   }
+
+  metadata {
+    block-project-ssh-keys="true"
+    ssh-keys = "pendi:${file("~/.ssh/id_rsa.pub")}"
+  }
 }
 
 // Create node instances
@@ -80,5 +89,10 @@ resource "google_compute_instance" "node" {
   can_ip_forward = "true"
   service_account {
     scopes = ["compute-rw"]
+  }
+
+  metadata {
+    block-project-ssh-keys="true"
+    ssh-keys = "pendi:${file("~/.ssh/id_rsa.pub")}"
   }
 }

@@ -4,6 +4,21 @@
 - Install Terraform (Recommended version : >0.9.8) [link](https://www.terraform.io/intro/getting-started/install.html)
 - Install Ansible (Recommended version : >2.3.0.0) [link](http://docs.ansible.com/ansible/intro_installation.html)
 
+
+### Setting SSH keys
+Create SSH keys to connect to VM instances.
+If you have existing key pairs (~/.ssh/id_rsa for example) then you can skip this step and use that key
+If you want to generate new public private key pair, run this command :
+
+```
+ssh-keygen -t rsa -C "changethiscomment"
+```
+
+Press enter for default filepath in ~/.ssh/id_rsa
+
+Use this key as a `--private-key` parameter when running Ansible script
+
+
 ### Create the machines with Terraform
 Create VMs (I used GCE in this project) using terraform. Terraform can create and destroy instances using the same .tf files.
 
@@ -11,14 +26,24 @@ Create VMs (I used GCE in this project) using terraform. Terraform can create an
 2. Open gce.tf
 3. Configure the cloud provider resource bracket in gce.tf, change credentials, project and region. Here is how to get gce json credentials 
 [here](https://www.terraform.io/docs/providers/google/index.html#authentication-json-file), change the file path to your liking
-4. Edit variables.tf to change the number of etcd, master and node instances
-5. Now open terminal in the same directory, run command :
+4. Configure filepath for SSH public key in each etcd, master, node component inside the metadata block. Change the following with your own username and your filepath
+
+    ```
+    metadata {
+      block-project-ssh-keys="true"
+      ssh-keys = "pendi:${file("~/.ssh/id_rsa.pub")}"
+    }
+    ```
+
+
+5. Edit variables.tf to change the number of etcd, master and node instances
+6. Now open terminal in the same directory, run command :
 
     ```
     terraform apply
     ```
 
-5. If the command ran succesfully, it should produce output similar to this. 
+7. If the command ran succesfully, it should produce output similar to this. 
 
     ```
     ansible_inventory = [etcd]
@@ -144,13 +169,6 @@ Apiserver will authenticate user written in ansible/roles/kube_apiserver/files/a
 Each kubernetes component will present token and user to Apiserver using kubeconfig (e.g. kubelet will use ansible/roles/kubelet/templates/kubeconfig.j2 for its authentication)
 
 
-### Setting SSH keys
-Create SSH keys to connect to VM instances.
-For GCE : [link](https://cloud.google.com/compute/docs/instances/connecting-to-instance)
-
-Use this key as a `--private-key` parameter when running Ansible script
-
-
 ### Run Ansible script
 Ansible will configure the machine which is provided in inventories/inv.ini, the final result is a working kubernetes cluster.
 the script kubernetes.yml is divided into 4 parts, init.yml, etcd.yml, master.yml and node.yml.
@@ -162,13 +180,21 @@ You can run the script individually, but each machine has to run init.yml once.
     export ANSIBLE_HOST_KEY_CHECKING=False
     ```
 
-2. Run command from ansible/ (You should provide the private key used for SSH, by default it's in ~/.ssh/)
+2. (Optional) If you use password protected private key, you can run this command to avoid retyping password (assuming your key is ~/.ssh/id_rsa)
 
     ```
-    ansible-playbook  -i inventories/inv.ini --private-key=~/.ssh/google_compute_engine kubernetes.yml
+    $ ssh-agent bash
+    $ ssh-add ~/.ssh/id_rsa
     ```
 
-3. After the script finished, you could check if the nodes has registered using this command in master instance 
+
+3. Run command from ansible/ (You should provide the private key used for SSH, by default it's in ~/.ssh/ and your username that was configured in Terraform)
+
+    ```
+    ansible-playbook  -i inventories/inv.ini --private-key=~/.ssh/id_rsa kubernetes.yml -u pendi
+    ```
+
+4. After the script finished, you could check if the nodes has registered using this command in master instance 
 
     ```
     kubectl get nodes
