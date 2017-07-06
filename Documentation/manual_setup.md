@@ -27,7 +27,7 @@ https://github.com/Praqma/LearnKubernetes/blob/master/kamran/Kubernetes-The-Hard
 
 **etcd**
 
-6. First ssh to etcd machine, move certs and install etcd (*Change etcd version if needed)
+6. First ssh to etcd machine, move certs and install etcd (Change etcd version below if needed)
 	
 	sudo mkdir -p /etc/etcd/
 	ls /etc/etcd/
@@ -71,6 +71,9 @@ https://github.com/Praqma/LearnKubernetes/blob/master/kamran/Kubernetes-The-Hard
 8. start service and check
 9. repeat step 6-8 for all etcd VM, etcd should be ready for now
 
+**Configure Cloud provider : gce.conf**
+(later)
+
 **Master Component**
 
 **API Server**
@@ -107,7 +110,8 @@ https://github.com/Praqma/LearnKubernetes/blob/master/kamran/Kubernetes-The-Hard
 	sudo mkdir -p /var/lib/kubernetes
 	sudo mv ca.pem kubernetes-key.pem kubernetes.pem /var/lib/kubernetes/
 
-19. Install docker
+18. Install and configure flannel
+20. Install docker
 
 	wget https://get.docker.com/builds/Linux/x86_64/docker-1.11.2.tgz
 
@@ -115,7 +119,7 @@ https://github.com/Praqma/LearnKubernetes/blob/master/kamran/Kubernetes-The-Hard
 
 	sudo cp docker/docker* /usr/bin/
 
-20. Setup kubelet and kube proxy (configure the parameters for systemd files, and dont forget to edit the tokens too, and delete docker bridge, and kubeconfig)
+21. Setup kubelet and kube proxy (configure the parameters for systemd files, and dont forget to edit the tokens too, and delete docker bridge, and kubeconfig)
 
 	sudo mkdir -p /opt/cni
 
@@ -126,14 +130,10 @@ https://github.com/Praqma/LearnKubernetes/blob/master/kamran/Kubernetes-The-Hard
 	wget https://storage.googleapis.com/kubernetes-release/release/v1.6.4/bin/linux/amd64/kube-proxy
 	wget https://storage.googleapis.com/kubernetes-release/release/v1.6.4/bin/linux/amd64/kubelet
 
-21. Repeat step 18-20 to other Worker VMs
-22. Check Pod CIDR
+22. Repeat step 18-21 to other Worker VMs
+23. Check Nodes with kubectl get nodes
 
 **Testing Cluster**
 
-23. Run test pod
-24. Configure routing between pods
-25. Adding DNS add-ons
-26. Smoke Test
-
- NODE_PORT=$(kubectl get svc multi --output=jsonpath='{range .spec.ports[0]}{.nodePort}')
+24. Adding DNS add-ons
+25. Smoke Test

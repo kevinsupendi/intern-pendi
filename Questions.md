@@ -42,3 +42,12 @@ However, because Secrets is Kubernetes object, it is also saved in etcd.
 Etcd communication can be configured to use TLS, but Kubernetes API Object is saved in plaintext, including secrets.
 It is also saved in disk, so admin should consider delete disk after use or encrypt it. 
 [Update] Etcd encryption has been introduced in Kubernetes 1.7 as alpha feature
+
+### How autoscaling in Kubernetes works ?
+There are two types of autoscaling in Kubernetes, 
+
+1. [Cluster autoscaling](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/)
+2. [Horizontal Pod autoscaling](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/)
+
+Basically, cluster autoscaling can autoscale the number of nodes (VM) in Kubernetes,
+while Horizontal Pod autoscaling can autoscale the number of Pods in Kubernetes Deployment/Replication Controller.

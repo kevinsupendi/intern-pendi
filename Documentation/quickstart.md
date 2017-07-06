@@ -248,6 +248,12 @@ Even though your nodes are ready, you should test if your Service and Deployment
 ### What's next ?
 Your Kubernetes should be running well and has been tested. Now the next step is deploy some addons to extend
 Kubernetes functionality
+There is an ansible script called addons.yml. Run the script after cluster configuration is finished to deploy all addons automatically. 
+
+```
+ansible-playbook  -i inventories/inv.ini --private-key=~/.ssh/id_rsa addons.yml -u pendi
+```
+
 - [DNS](addons/dns.md)
 - [Kubernetes Dashboard (Optional Heapster)](addons/dashboard.md)
 - [Logging with EFK stack (ElasticSearch + Fluentd + Kibana)](addons/logging.md)

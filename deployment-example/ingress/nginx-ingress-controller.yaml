@@ -53,6 +53,6 @@ spec:
         args:
         - /nginx-ingress-controller
         - --default-backend-service=$(POD_NAMESPACE)/default-http-backend
-        - --apiserver-host=http://10.240.16.3:8080
+        - --apiserver-host=http://kubernetes.default:8080
       nodeSelector:
         ingress: nginx
