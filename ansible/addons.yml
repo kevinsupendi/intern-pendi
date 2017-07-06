@@ -1,11 +1,10 @@
-- hosts: localhost
+- hosts: master-1
   become: true
   become_method: sudo
   roles:
     - { role: kubedns, tags: [ 'kubedns' ] }
     - { role: kubedashboard, tags: [ 'kubedashboard' ] }
     - { role: storageclass, tags: [ 'storageclass' ] }
-    - { role: persistentvolume, tags: [ 'persistentvolume' ] }
     - { role: ingress, tags: [ 'ingress' ] }
     - { role: heapster, tags: [ 'heapster' ] }
     - { role: fluentd, tags: [ 'fluentd' ] }

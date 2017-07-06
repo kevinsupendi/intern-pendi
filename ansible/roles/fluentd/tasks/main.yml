@@ -17,7 +17,7 @@
     group: root
     mode: 0644
 - copy:
-    src: "{{ role_path }}/files/fluentd-es-ds.yaml"
+    src: "{{ role_path }}/files/fluentd-daemonset-elasticsearch.yaml"
     dest: /tmp
     owner: root
     group: root
@@ -35,7 +35,7 @@
   command: kubectl apply -f /tmp/kibana-service.yaml
   ignore_errors: yes
 - name: Deploy fluentd ds
-  command: kubectl apply -f /tmp/fluentd-es-ds.yaml
+  command: kubectl apply -f /tmp/fluentd-daemonset-elasticsearch.yaml
   ignore_errors: yes
 - name: Deploy elasticsearch controller
   command: kubectl apply -f /tmp/es-controller.yaml
