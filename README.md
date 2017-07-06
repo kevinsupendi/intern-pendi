@@ -13,7 +13,7 @@ Follow this instruction to create Kubernetes cluster automatically with Ansible 
 [here](Documentation/quickstart.md)
 
 
-### Manual Setup (WIP)
+### Manual Setup
 Create Kubernetes cluster manually with this steps
 [here](Documentation/manual_setup.md)
 

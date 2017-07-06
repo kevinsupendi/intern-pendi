@@ -7,27 +7,43 @@
 References :
 
 
-https://github.com/kelseyhightower/kubernetes-the-hard-way/blob/master/docs/06-kubernetes-worker.md
+https://github.com/kelseyhightower/kubernetes-the-hard-way/tree/master/docs
 https://github.com/Praqma/LearnKubernetes/blob/master/kamran/Kubernetes-The-Hard-Way-on-BareMetal.md
 
 
 ### Steps to do :
 
-1. Setup network, design network, configure firewall (can be automated with Terraform)
-2. Design kubernetes architecture (H/A or not, decide number of etcd, master and node components)
-3. Create VMs (can be automated with Terraform)
+
+**Prerequisites**
+Configure gce.conf to use Cloud Provider features (LoadBalancer Service and Dynamic Provisioning, Cluster autoscaler not configured in this project).
+Create file gce.conf and fill the values. Create if your VM instance will be node-1 and node-2, then the prefix is node.
+Create node tags for your Master and Node VM, they must have the same tag.
+
+```
+[Global]
+project-id=
+network-name=
+node-tags=
+node-instance-prefix=
+```
+
+**Initialisation**
+
+1. Create a network for Kubernetes cluster. Configure firewall so each VM can connect to each other
+2. Design kubernetes architecture (H/A or not, decide number of etcd, master and node components), in this project we use 2 etcds, 2 masters and 2 nodes
+3. Create VMs (can be automated with Terraform). Master and Node must have the same tags.
 
 	There will be :
-	- etcd component
-	- Master component (apiserver, scheduler, controller-manager)
-	- Node component (kubelet, kube-proxy, docker)
+	- 2x etcd component
+	- 2x Master component (apiserver, scheduler, controller-manager)
+	- 2x Node component (kubelet, kube-proxy, docker, flannel)
 
-4. Generate certificates for HTTPS
-5. Copy certs to all components
+4. Generate certificates for HTTPS (ca.pem, kubernetes.pem, kubernetes-key.pem) [instructions](https://github.com/Praqma/LearnKubernetes/blob/master/kamran/Kubernetes-The-Hard-Way-on-BareMetal.md#configure--setup-tls-certificates-for-the-cluster)
+5. Copy certs to all VMs
 
 **etcd**
 
-6. First ssh to etcd machine, move certs and install etcd (Change etcd version below if needed)
+1. First ssh to etcd machine, move certs and install etcd (Change etcd version below if needed)
 	
 	sudo mkdir -p /etc/etcd/
 	ls /etc/etcd/
@@ -38,7 +54,7 @@ https://github.com/Praqma/LearnKubernetes/blob/master/kamran/Kubernetes-The-Hard
 	sudo cp etcd-v3.1.8-linux-amd64/etcd* /usr/bin/
 	sudo mkdir -p /var/lib/etcd
 
-7. Create etcd.service file for systemd
+2. Create etcd.service file for systemd
 
 	cat > etcd.service <<"EOF"
 	[Unit]
@@ -68,22 +84,24 @@ https://github.com/Praqma/LearnKubernetes/blob/master/kamran/Kubernetes-The-Hard
 	WantedBy=multi-user.target
 	EOF
 
-8. start service and check
-9. repeat step 6-8 for all etcd VM, etcd should be ready for now
+3. start service and check
+4. repeat steps above for all etcd VM, etcd should be ready for now
+5. Check etcd cluster with this command :
 
-**Configure Cloud provider : gce.conf**
-(later)
+```
+etcdctl --ca-file=/etc/etcd/ca.pem cluster-health
+```
 
 **Master Component**
 
 **API Server**
 
-10. Setup TLS certificate
+1. Setup TLS certificate
 
 	sudo mkdir -p /var/lib/kubernetes
 	sudo mv ca.pem kubernetes-key.pem kubernetes.pem /var/lib/kubernetes/
 
-11. Download and install kubernetes latest binary
+2. Download and install kubernetes latest binary
 
 	wget https://storage.googleapis.com/kubernetes-release/release/v1.6.4/bin/linux/amd64/kube-apiserver
 	wget https://storage.googleapis.com/kubernetes-release/release/v1.6.4/bin/linux/amd64/kube-controller-manager
@@ -93,25 +111,39 @@ https://github.com/Praqma/LearnKubernetes/blob/master/kamran/Kubernetes-The-Hard
 	chmod +x kube-apiserver kube-controller-manager kube-scheduler kubectl
 	sudo mv kube-apiserver kube-controller-manager kube-scheduler kubectl /usr/bin/
 
-12. Setup Authentication and Authorization with token
+3. Setup Authentication and Authorization with token
 
 	wget https://raw.githubusercontent.com/kelseyhightower/kubernetes-the-hard-way/master/token.csv
 	
-13. edit sample token
-14. sudo mv token.csv /var/lib/kubernetes/
-15. Create authorization policy file (for ABAC mode)
-16. Create systemd file for apiserver, controller manager, scheduler, then run the service
-17. Repeat step 10-16 for other Master VM
+4. edit sample token
+5. sudo mv token.csv /var/lib/kubernetes/
+6. Create authorization policy file (for ABAC mode)
+7. Create systemd file for apiserver, controller manager, scheduler, then run the service (use systemd files in ansible/roles)
+8. Put them in /etc/systemd/system/
+9. Put gce.conf in /var/lib/kubernetes/
+10. Run this to activate services
+
+```
+sudo systemctl daemon-reload
+sudo systemctl enable kube-apiserver
+sudo systemctl enable kube-controller-manager
+sudo systemctl enable kube-scheduler
+sudo systemctl start kube-apiserver
+sudo systemctl start kube-controller-manager
+sudo systemctl start kube-scheduler
+```
+
+9. Repeat steps above for other Master VM
 
 **Worker Component**
 
-18. Setup TLS certificate
+1. Setup TLS certificate
 	
 	sudo mkdir -p /var/lib/kubernetes
 	sudo mv ca.pem kubernetes-key.pem kubernetes.pem /var/lib/kubernetes/
 
-18. Install and configure flannel
-20. Install docker
+2. Install and configure flannel
+3. Install docker
 
 	wget https://get.docker.com/builds/Linux/x86_64/docker-1.11.2.tgz
 
@@ -119,7 +151,7 @@ https://github.com/Praqma/LearnKubernetes/blob/master/kamran/Kubernetes-The-Hard
 
 	sudo cp docker/docker* /usr/bin/
 
-21. Setup kubelet and kube proxy (configure the parameters for systemd files, and dont forget to edit the tokens too, and delete docker bridge, and kubeconfig)
+4. Setup kubelet and kube proxy (configure the parameters for systemd files, and dont forget to edit the tokens too, and delete docker bridge, and kubeconfig)
 
 	sudo mkdir -p /opt/cni
 
@@ -130,10 +162,13 @@ https://github.com/Praqma/LearnKubernetes/blob/master/kamran/Kubernetes-The-Hard
 	wget https://storage.googleapis.com/kubernetes-release/release/v1.6.4/bin/linux/amd64/kube-proxy
 	wget https://storage.googleapis.com/kubernetes-release/release/v1.6.4/bin/linux/amd64/kubelet
 
-22. Repeat step 18-21 to other Worker VMs
-23. Check Nodes with kubectl get nodes
+5. Create systemd file for flannel, docker, kubelet, kube-proxy, then run the service (use systemd files in ansible/roles)
+6. Put them in /etc/systemd/system/
+7. Put gce.conf in /var/lib/kubernetes/
+8. Repeat steps above to other Worker VMs
+9. Check Nodes with kubectl get nodes
 
 **Testing Cluster**
 
-24. Adding DNS add-ons
-25. Smoke Test
+1. Adding DNS add-ons
+2. Smoke Test
