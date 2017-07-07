@@ -15,4 +15,3 @@
 
 ### Persistent Volumes :
 - Still bugged when node dies, volume cannot be automatically detached from pod, must restart node or delete node or detach volume manually in GCP console
-- Default reclaim policy for dynamic provisioning is delete, but only if pod is not deployed anymore, so data still persist for pod error/restart

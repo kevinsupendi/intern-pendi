@@ -1,10 +1,10 @@
 data "template_file" "etcd_ansible" {
-  count = "${var.num_etcd}"
+  count = "${var.num_master}"
   template = "${file("hostname.tpl")}"
   vars {
     index = "${count.index + 1}"
-    name  = "etcd"
-    extra = " ansible_host=${element(split(",","${join(",", google_compute_instance.etcd.*.network_interface.0.access_config.0.assigned_nat_ip)}"),count.index)} internal_ip=${element(split(",","${join(",", google_compute_instance.etcd.*.network_interface.0.address)}"),count.index)}"
+    name  = "master"
+    extra = " ansible_host=${element(split(",","${join(",", google_compute_instance.master.*.network_interface.0.access_config.0.assigned_nat_ip)}"),count.index)} internal_ip=${element(split(",","${join(",", google_compute_instance.master.*.network_interface.0.address)}"),count.index)}"
   }
 }
 

@@ -12,9 +12,9 @@ node_ips : "{{ groups['node'] | map('extract', hostvars, ['internal_ip'])  | lis
 master1_ext_ip : "{{ hostvars[master_names[0]]['ansible_host'] }}"
 
 #Security token
-kubelet_token : ""
-scheduler_token : ""
-controller_token : ""
+kubelet_token : "changeme"
+scheduler_token : "changeme"
+controller_token : "changeme"
 
 #Project name
 project_name : "intern-kevin"

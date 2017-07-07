@@ -1,16 +1,11 @@
 # Number of instances to start.
-variable "num_etcd" {
-   default = "1"
-}
-
-# Number of instances to start.
 variable "num_master" {
   default = "1"
 }
 
 # Number of instances to start.
 variable "num_node" {
-  default = "1"
+  default = "2"
 }
 
 # GCE region to use.

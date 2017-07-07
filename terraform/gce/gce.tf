@@ -5,33 +5,6 @@ provider "google" {
   region      = "${var.gce_region}"
 }
 
-// Create etcd instances
-resource "google_compute_instance" "etcd" {
-  count = "${var.num_etcd}"
-  name         = "etcd-${count.index + 1 }"
-  machine_type = "n1-standard-1"
-  zone         = "${var.gce_zone}"
-
-  disk {
-    image = "${var.gce_image}"
-    size = 10
-  }
-
-  network_interface {
-    subnetwork = "${google_compute_subnetwork.subnet.name}"
-    access_config {
-      // Ephemeral IP
-    }
-  }
- 
-  can_ip_forward = "true"
-
-  metadata {
-    block-project-ssh-keys="true"
-    ssh-keys = "pendi:${file("~/.ssh/id_rsa.pub")}"
-  }
-}
-
 // Create master instances
 resource "google_compute_instance" "master" {
   count = "${var.num_master}"
