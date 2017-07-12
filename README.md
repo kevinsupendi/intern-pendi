@@ -19,12 +19,8 @@ Create Kubernetes cluster manually with this steps
 
 
 ### After setting up
-Assuming you have finished the setup and have a working kubernetes cluster, you can start deploying applications on them.
-There is an ansible script called addons.yml. Run the script after cluster configuration is finished to deploy all addons automatically. 
-
-```
-ansible-playbook  -i inventories/inv.ini --private-key=~/.ssh/id_rsa addons.yml -u pendi
-```
+By default all addons below will be automatically deployed in the process, except for Jenkins application.
+You can try deploying several application or change deployed addons configuration.
 
 Here is a few suggestions of useful addons and Kubernetes resources :
 - [DNS](Documentation/addons/dns.md)

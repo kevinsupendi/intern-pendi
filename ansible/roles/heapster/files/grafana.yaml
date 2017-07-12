@@ -11,6 +11,7 @@ spec:
         task: monitoring
         k8s-app: grafana
     spec:
+      nodeName: master-1
       containers:
       - name: grafana
         image: gcr.io/google_containers/heapster-grafana-amd64:v4.0.2

@@ -1,0 +1,153 @@
+#! /bin/bash
+
+#Generate certificates
+
+echo 'capem' > ca.pem
+echo 'kubernetespem' > kubernetes.pem
+echo 'kuberneteskeypem' > kubernetes-key.pem
+
+mkdir /var/lib/kubernetes
+mv ca.pem /var/lib/kubernetes/ca.pem
+mv kubernetes.pem /var/lib/kubernetes/kubernetes.pem
+mv kubernetes-key.pem /var/lib/kubernetes/kubernetes-key.pem
+
+#Install Flanneld
+wget https://github.com/coreos/flannel/releases/download/v0.7.0/flannel-v0.7.0-linux-amd64.tar.gz
+tar -xf flannel-v0.7.0-linux-amd64.tar.gz
+chmod +x flanneld
+sudo mv flanneld /usr/bin/flanneld
+
+#Install Docker
+wget https://get.docker.com/builds/Linux/x86_64/docker-1.11.2.tgz
+tar -xf docker-1.11.2.tgz
+sudo cp docker/docker* /usr/bin/
+
+
+#Install Kubelet
+wget https://storage.googleapis.com/kubernetes-release/release/v1.6.4/bin/linux/amd64/kubelet
+chmod +x kubelet
+sudo mv kubelet /usr/bin/kubelet
+
+
+#Install Kube-proxy
+wget https://storage.googleapis.com/kubernetes-release/release/v1.6.4/bin/linux/amd64/kube-proxy
+chmod +x kube-proxy
+sudo mv kube-proxy /usr/bin/kube-proxy
+
+#Create gce.conf
+cat > gce.conf <<EOF
+[Global]
+project-id=intern-kevin
+network-name=kubenet
+node-tags=node
+node-instance-prefix=node
+EOF
+
+sudo mv gce.conf /var/lib/kubernetes/gce.conf
+
+#Create kubeconfig
+cat > kubeconfig <<EOF
+apiVersion: v1
+kind: Config
+clusters:
+- cluster:
+    certificate-authority: /var/lib/kubernetes/ca.pem
+    server: https://10.240.16.2:6443
+  name: kubernetes
+contexts:
+- context:
+    cluster: kubernetes
+    user: kubelet
+  name: kubelet
+current-context: kubelet
+users:
+- name: kubelet
+  user:
+    token: changeme
+EOF
+
+sudo mkdir /var/lib/kubelet
+sudo mv kubeconfig /var/lib/kubelet/kubeconfig
+
+#Create systemd files
+
+cat > flannel.service <<EOF
+[Unit]
+Description=Flannel
+Documentation=https://github.com/coreos/flannel
+
+[Service]
+ExecStart=/usr/bin/flanneld --etcd-endpoints=https://10.240.16.2:2379 \\
+  --etcd-keyfile=/var/lib/kubernetes/kubernetes-key.pem \\
+  --etcd-certfile=/var/lib/kubernetes/kubernetes.pem \\
+  --etcd-cafile=/var/lib/kubernetes/ca.pem \\
+  --ip-masq=true
+
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+cat > docker.service <<EOF
+[Unit]
+Description=Docker Application Container Engine
+Documentation=http://docs.docker.io
+After=flannel.service
+Requires=flannel.service
+
+[Service]
+EnvironmentFile=/run/flannel/subnet.env
+ExecStart=/usr/bin/docker daemon --bip=\${FLANNEL_SUBNET} --mtu=\${FLANNEL_MTU}  --iptables=false   --ip-masq=false   --host=unix:///var/run/docker.sock   --log-level=error   --storage-driver=overlay
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+cat > kubelet.service <<EOF
+[Unit]
+Description=Kubernetes Kubelet
+Documentation=https://github.com/GoogleCloudPlatform/kubernetes
+
+[Service]
+ExecStart=/usr/bin/sudo /usr/bin/kubelet --allow-privileged=true   --api-servers=https://10.240.16.2:6443  --cloud-provider=gce --cloud-config=/var/lib/kubernetes/gce.conf --cluster-dns=10.32.0.10   --cluster-domain=cluster.local   --container-runtime=docker   --docker=unix:///var/run/docker.sock   --kubeconfig=/var/lib/kubelet/kubeconfig   --serialize-image-pulls=false   --tls-cert-file=/var/lib/kubernetes/kubernetes.pem   --tls-private-key-file=/var/lib/kubernetes/kubernetes-key.pem   --v=2
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+cat > kube-proxy.service <<EOF
+[Unit]
+[Unit]
+Description=Kubernetes Kube Proxy
+Documentation=https://github.com/GoogleCloudPlatform/kubernetes
+
+[Service]
+ExecStart=/usr/bin/kube-proxy   --cluster-cidr=10.200.0.0/16   --kubeconfig=/var/lib/kubelet/kubeconfig   --proxy-mode=iptables   --v=2
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+sudo mv flannel.service /etc/systemd/system/flannel.service
+sudo mv docker.service /etc/systemd/system/docker.service
+sudo mv kubelet.service /etc/systemd/system/kubelet.service
+sudo mv kube-proxy.service /etc/systemd/system/kube-proxy.service
+
+#Start services
+sudo systemctl daemon-reload
+sudo systemctl enable flannel
+sudo systemctl enable docker
+sudo systemctl enable kubelet
+sudo systemctl enable kube-proxy
+sudo systemctl start flannel
+sudo systemctl start docker
+sudo systemctl start kubelet
+sudo systemctl start kube-proxy

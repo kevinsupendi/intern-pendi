@@ -11,6 +11,7 @@ spec:
         task: monitoring
         k8s-app: influxdb
     spec:
+      nodeName: master-1
       containers:
       - name: influxdb
         image: gcr.io/google_containers/heapster-influxdb-amd64:v1.1.1

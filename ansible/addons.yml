@@ -8,4 +8,4 @@
     - { role: ingress, tags: [ 'ingress' ] }
     - { role: heapster, tags: [ 'heapster' ] }
     - { role: fluentd, tags: [ 'fluentd' ] }
-    - { role: jenkins, tags: [ 'jenkins' ] }
+    - { role: autoscaler, tags: [ 'autoscaler' ] }

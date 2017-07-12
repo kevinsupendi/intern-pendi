@@ -1,11 +1,5 @@
-- name: Create certificate
-  hosts: localhost
-  connection: local
-  roles:
-     - certs
-
 - name: Copy certificate to all
-  hosts: master,etcd,node
+  hosts: master,etcd
   become: true
   become_method: sudo
   tasks:

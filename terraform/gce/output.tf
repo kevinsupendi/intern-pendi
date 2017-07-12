@@ -18,22 +18,11 @@ data "template_file" "master_ansible" {
   }
 }
 
-data "template_file" "node_ansible" {
-  count = "${var.num_node}"
-  template = "${file("hostname.tpl")}"
-  vars {
-    index = "${count.index + 1}"
-    name  = "node"
-    extra = " ansible_host=${element(split(",","${join(",", google_compute_instance.node.*.network_interface.0.access_config.0.assigned_nat_ip)}"),count.index)} internal_ip=${element(split(",","${join(",", google_compute_instance.node.*.network_interface.0.address)}"),count.index)}"
-  }
-}
-
 data "template_file" "ansible_hosts" {
   template = "${file("ansible_hosts.tpl")}"
   vars {
     etcd_hosts   = "${join("\n",data.template_file.etcd_ansible.*.rendered)}"
     master_hosts   = "${join("\n",data.template_file.master_ansible.*.rendered)}"
-    node_hosts   = "${join("\n",data.template_file.node_ansible.*.rendered)}"
   }
 }
 

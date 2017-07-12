@@ -11,6 +11,7 @@ spec:
         task: monitoring
         k8s-app: heapster
     spec:
+      nodeName: master-1
       containers:
       - name: heapster
         image: gcr.io/google_containers/heapster-amd64:v1.3.0

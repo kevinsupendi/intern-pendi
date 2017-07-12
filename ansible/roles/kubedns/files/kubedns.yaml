@@ -15,6 +15,7 @@ spec:
       labels:
         app: kubedns
     spec:
+      nodeName: master-1
       volumes:
       - name: "kubeconfig"
         hostPath:

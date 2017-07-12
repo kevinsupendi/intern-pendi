@@ -5,6 +5,10 @@
     - kube_apiserver
     - kube_controller_manager
     - kube_scheduler
+    - flannel
+    - docker
+    - kubelet
+    - kube_proxy
   tasks:
     - meta: flush_handlers
     - name: ensure kube-apiserver is running
@@ -17,3 +21,18 @@
       command: kubectl get componentstatuses
       register: kubestatus
     - debug: var=kubestatus.stdout_lines
+    - meta: flush_handlers
+    - name: ensure flannel is running
+      systemd: name=flannel state=started enabled=yes
+    - name: ensure docker is running
+      systemd: name=docker state=started enabled=yes
+    - name: ensure kubelet is running
+      systemd: name=kubelet state=started enabled=yes
+    - name: ensure kube-proxy is running
+      systemd: name=kube-proxy state=started enabled=yes
+    - name: Check node
+      command: kubectl get nodes
+      register: kubenodes
+    - debug: var=kubenodes.stdout_lines
+    - name: Cordon master component
+      command: kubectl cordon master-1
