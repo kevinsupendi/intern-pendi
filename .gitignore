@@ -4,4 +4,5 @@
 *.pem
 certs/
 ansible/roles/certs/files/
-ansible/inventories/*
+ansible/inventories/
+terraform/gce/gce_template_startup.sh
