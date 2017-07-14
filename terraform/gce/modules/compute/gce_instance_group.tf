@@ -18,7 +18,7 @@ resource "google_compute_instance_template" "igm" {
   }
 
   network_interface {
-    subnetwork = "${google_compute_subnetwork.subnet.name}"
+    subnetwork = "${var.subnet}"
     access_config {
       // Ephemeral IP
     }

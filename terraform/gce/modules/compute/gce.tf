@@ -1,10 +1,3 @@
-// Configure the Google Cloud provider
-provider "google" {
-  credentials = "${file("~/svc_account/account.json")}"
-  project     = "intern-kevin"
-  region      = "${var.gce_region}"
-}
-
 // Create master instances
 resource "google_compute_instance" "master" {
   count = "${var.num_master}"
@@ -20,7 +13,7 @@ resource "google_compute_instance" "master" {
   }
 
   network_interface {
-    subnetwork = "${google_compute_subnetwork.subnet.name}"
+    subnetwork = "${var.subnet}"
     access_config {
       // Ephemeral IP
     }

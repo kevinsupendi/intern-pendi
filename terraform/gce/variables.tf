@@ -1,11 +1,6 @@
-# Number of instances to start.
-variable "num_master" {
-  default = "1"
-}
-
-# Number of instances to start.
-variable "num_node" {
-  default = "2"
+# GCE project ID
+variable "project_id" {
+  default = "intern-kevin"
 }
 
 # GCE region to use.
@@ -16,11 +11,6 @@ variable "gce_region" {
 # GCE zone to use.
 variable "gce_zone" {
   default = "asia-northeast1-b"
-}
-
-# GCE image name.
-variable "gce_image" {
-  default = "ubuntu-os-cloud/ubuntu-1604-lts"
 }
 
 # GCE network name.

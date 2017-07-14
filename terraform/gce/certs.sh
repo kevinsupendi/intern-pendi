@@ -70,14 +70,9 @@ echo '{
 
 cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=kubernetes kubernetes-csr.json | cfssljson -bare kubernetes
 
-perl -pe 's/capem/`cat ca.pem`/e' terraform/gce/gce_template_startup > terraform/gce/gce_template_startup.sh
-perl -i -pe 's/kubernetespem/`cat kubernetes.pem`/e' terraform/gce/gce_template_startup.sh
-perl -i -pe 's/kuberneteskeypem/`cat kubernetes-key.pem`/e' terraform/gce/gce_template_startup.sh
-
-
-mv ca.pem ansible/roles/certs/files/ca.pem
-mv kubernetes.pem ansible/roles/certs/files/kubernetes.pem
-mv kubernetes-key.pem ansible/roles/certs/files/kubernetes-key.pem
+perl -pe 's/capem/`cat ca.pem`/e' modules/compute/gce_template_startup > modules/compute/gce_template_startup.sh
+perl -i -pe 's/kubernetespem/`cat kubernetes.pem`/e' modules/compute/gce_template_startup.sh
+perl -i -pe 's/kuberneteskeypem/`cat kubernetes-key.pem`/e' modules/compute/gce_template_startup.sh
 
 #Cleaning up
 rm ca.csr
@@ -86,3 +81,6 @@ rm ca-csr.json
 rm ca-key.pem
 rm kubernetes.csr
 rm kubernetes-csr.json
+rm ca.pem
+rm kubernetes.pem
+rm kubernetes-key.pem
