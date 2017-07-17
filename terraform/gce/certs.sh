@@ -50,7 +50,7 @@ cfssl gencert -initca ca-csr.json | cfssljson -bare ca
 echo '{
   "CN": "*.c.intern-kevin.internal",
   "hosts": [
-    "10.32.0.1","10.240.16.2","master-1","10.240.16.3","10.240.16.4","10.240.16.5","10.240.16.6","10.240.16.7","10.240.16.8","10.240.16.9","10.240.16.10","localhost","127.0.0.1","kubernetes.default"
+    "10.32.0.1","*","localhost","127.0.0.1","kubernetes.default"
   ],
   "key": {
     "algo": "rsa",
@@ -70,9 +70,12 @@ echo '{
 
 cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=kubernetes kubernetes-csr.json | cfssljson -bare kubernetes
 
-perl -pe 's/capem/`cat ca.pem`/e' modules/compute/gce_template_startup > modules/compute/gce_template_startup.sh
-perl -i -pe 's/kubernetespem/`cat kubernetes.pem`/e' modules/compute/gce_template_startup.sh
-perl -i -pe 's/kuberneteskeypem/`cat kubernetes-key.pem`/e' modules/compute/gce_template_startup.sh
+perl -pe 's/capem/`cat ca.pem`/e' modules/compute/gce_template_startup > modules/compute/gce_template_startup.sh.tpl
+perl -i -pe 's/kubernetespem/`cat kubernetes.pem`/e' modules/compute/gce_template_startup.sh.tpl
+perl -i -pe 's/kuberneteskeypem/`cat kubernetes-key.pem`/e' modules/compute/gce_template_startup.sh.tpl
+perl -pe 's/capem/`cat ca.pem`/e' modules/compute/gce_master_startup > modules/compute/gce_master_startup.sh.tpl
+perl -i -pe 's/kubernetespem/`cat kubernetes.pem`/e' modules/compute/gce_master_startup.sh.tpl
+perl -i -pe 's/kuberneteskeypem/`cat kubernetes-key.pem`/e' modules/compute/gce_master_startup.sh.tpl
 
 #Cleaning up
 rm ca.csr
