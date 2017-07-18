@@ -118,10 +118,12 @@ variable "svc_node_port_range" {}
 
 variable "flannel_backend" {}
 
+variable "cred_path" {}
+
 
 # Configure the Google Cloud provider
 provider "google" {
-  credentials = "${file("~/svc_account/account.json")}"
+  credentials = "${file("${var.cred_path}")}"
   project     = "${var.project_id}"
   region      = "${var.gce_region}"
 }

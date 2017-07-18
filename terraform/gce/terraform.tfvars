@@ -1,5 +1,6 @@
 # PROJECT
 project_id="intern-kevin"
+cred_path="~/svc_account/account.json"
 
 # NETWORK
 gce_region="asia-northeast1"
