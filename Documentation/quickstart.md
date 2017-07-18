@@ -44,7 +44,7 @@ Change project name value in terraform/gce/terraform.tfvars
 Create VMs (I used GCE in this project) using terraform. Terraform can create and destroy instances using the same .tf files.
 
 1. Go to terraform directory
-2. Configure the cloud provider in terraform/gce/terraform.tfvars. Here is how to get gce json credentials 
+2. Configure the cloud provider in terraform/gce/terraform.tfvars, especially **project_id** and **cred_path**. Here is how to get gce json credentials for cred_path
 [here](https://www.terraform.io/docs/providers/google/index.html#authentication-json-file), change the file path to your liking
 3. Configure other variables in terraform/gce/terraform.tfvars. Multi master setup is not yet supported
 4. Now open terminal in the same directory, run command :
