@@ -1,9 +1,7 @@
 # PROJECT
 project_id="intern-kevin"
 
-
 # NETWORK
-subnet_ip_cidr_range="10.240.16.0/24"
 gce_region="asia-northeast1"
 gce_zone="asia-northeast1-b"
 net_name="kubenet"
@@ -11,8 +9,6 @@ subnet_name="kubesubnet"
 
 # COMPUTE
 gce_image="ubuntu-os-cloud/ubuntu-1604-lts"
-num_master=1
-master_name="master"
 master_type="n1-standard-1"
 master_disk_size=10
 tags=["node"]
@@ -22,6 +18,11 @@ block_project_ssh_keys="true"
 
 # MASTER SCRIPT
 etcd_version="3.1.8"
+scheduler_token="changeme"
+controller_token="changeme"
+svc_cluster_ip_range="10.32.0.0/24"
+svc_node_port_range="30000-32767"
+flannel_backend="vxlan"
 
 # NODE TEMPLATE
 template_name="node-template"
@@ -35,8 +36,14 @@ kubernetes_version="1.6.4"
 docker_version="1.11.2"
 flannel_version="0.7.0"
 kubelet_token="changeme"
-master_lb_ip="10.240.16.2"
-flannel_etcd_endpoints="https://10.240.16.2:2379"
 cluster_dns="10.32.0.10"
 cluster_domain="cluster.local"
 cluster_cidr="10.200.0.0/16"
+
+# DONT CHANGE THIS YET
+master_name="master"
+subnet_ip_cidr_range="10.240.16.0/24"
+num_master=1
+etcd_ips=["master-1=https://10.240.16.2:2380"]
+master_lb_ip="10.240.16.2"
+etcd_endpoints="https://10.240.16.2:2379"

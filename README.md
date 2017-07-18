@@ -3,13 +3,13 @@
 ![kubernetes logo](https://www.devopsnexus.com/user/pages/03.consultancy-areas/01.containerization/_technologies/kubernetes_logo.png)
 
 
-Kubernetes Cluster creation involving Ansible, Terraform and Google Cloud Platform. 
-Terraform is used for creating VMs in GCE, then configuration is automated by Ansible.
+Kubernetes Cluster creation involving  Terraform and Google Cloud Platform. 
+Terraform is used for creating VMs in GCE and configure startup script.
 This project used Ubuntu 16.04 LTS. The result should be reproducible with any Linux machine supporting systemd services.
 
 
 ### Quickstart
-Follow this instruction to create Kubernetes cluster automatically with Ansible and Terraform.
+Follow this instruction to create Kubernetes cluster automatically with Terraform.
 [here](Documentation/quickstart.md)
 
 
@@ -19,7 +19,7 @@ Create Kubernetes cluster manually with this steps
 
 
 ### After setting up
-By default all addons below will be automatically deployed in the process, except for Jenkins application.
+By default all addons below will be automatically deployed in the process, except for Jenkins and Kibana application.
 You can try deploying several application or change deployed addons configuration.
 
 Here is a few suggestions of useful addons and Kubernetes resources :
@@ -42,8 +42,3 @@ Notes, hacks and limitations [Notes](Notes.md)
 
 ### Presentation
 [Google Slides](https://docs.google.com/presentation/d/1tl7aIaKDEqyuU9VEx__fnUklybM0u7ZOq-AM2w0h4pA/edit?usp=sharing)
-
-
-### Other Interns' Project (soon)
-This section will be a collection of report and documentation about how I manage other interns' application inside Kubernetes.
-Experience, issues and deployment files will be documented [here](Documentation/interns/README.md)

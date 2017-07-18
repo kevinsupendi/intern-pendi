@@ -25,10 +25,18 @@ module "compute" {
   flannel_version="${var.flannel_version}"
   kubelet_token="${var.kubelet_token}"
   master_lb_ip="${var.master_lb_ip}"
-  flannel_etcd_endpoints="${var.flannel_etcd_endpoints}"
+  etcd_endpoints="${var.etcd_endpoints}"
   cluster_dns="${var.cluster_dns}"
   cluster_domain="${var.cluster_domain}"
   cluster_cidr="${var.cluster_cidr}"
+
+  etcd_version="${var.etcd_version}"
+  etcd_ips="${var.etcd_ips}"
+  scheduler_token="${var.scheduler_token}"
+  controller_token="${var.controller_token}"
+  svc_cluster_ip_range="${var.svc_cluster_ip_range}"
+  svc_node_port_range="${var.svc_node_port_range}"
+  flannel_backend="${var.flannel_backend}"
 }
 
 
@@ -86,13 +94,29 @@ variable "kubelet_token" {}
 
 variable "master_lb_ip" {}
 
-variable "flannel_etcd_endpoints" {}
+variable "etcd_endpoints" {}
 
 variable "cluster_dns" {}
 
 variable "cluster_domain" {}
 
 variable "cluster_cidr" {}
+
+variable "etcd_version" {}
+
+variable "etcd_ips" {
+  type="list"
+}
+
+variable "scheduler_token" {}
+
+variable "controller_token" {}
+
+variable "svc_cluster_ip_range" {}
+
+variable "svc_node_port_range" {}
+
+variable "flannel_backend" {}
 
 
 # Configure the Google Cloud provider
