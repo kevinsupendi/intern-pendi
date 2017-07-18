@@ -9,7 +9,7 @@ See below for list of addons.
 
 ### Create credentials
 
-1. In the terminal, go to git root project
+1. In the terminal, go to terraform/gce/
 2. Run ./certs.sh, this script will generate certs and automatically put it in Terraform startup script.
 
     ```
@@ -47,21 +47,14 @@ Create VMs (I used GCE in this project) using terraform. Terraform can create an
 2. Configure the cloud provider in terraform/gce/terraform.tfvars. Here is how to get gce json credentials 
 [here](https://www.terraform.io/docs/providers/google/index.html#authentication-json-file), change the file path to your liking
 3. Configure other variables in terraform/gce/terraform.tfvars. Multi master setup is not yet supported
-4. Configure filepath for SSH public key in terraform/gce/modules/compute/gce.tf and terraform/gce/modules/compute/gce_instance_group.tf inside the metadata block. Change the following with your own username and your filepath
-    ```
-    metadata {
-      block-project-ssh-keys="${var.block_project_ssh_keys}"
-      ssh-keys = "pendi:${file("~/.ssh/id_rsa.pub")}"
-    }
-    ```
-5. Now open terminal in the same directory, run command :
+4. Now open terminal in the same directory, run command :
 
     ```
     terraform get
     terraform apply
     ```
 
-6. If the command ran succesfully, you should have Kubernetes cluster running
+5. If the command ran succesfully, you should have Kubernetes cluster running
 
 You could check if the nodes has registered using this command in master instance 
 

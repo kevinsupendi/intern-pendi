@@ -381,6 +381,7 @@ sudo systemctl start docker
 sudo systemctl start kubelet
 sudo systemctl start kube-proxy
 
+sleep 10s
 
 #Deploy addons
 kubectl cordon master-1

@@ -55,7 +55,6 @@ resource "google_compute_instance_template" "igm" {
 
   metadata {
     block-project-ssh-keys="${var.block_project_ssh_keys}"
-    ssh-keys = "pendi:${file("~/.ssh/id_rsa.pub")}"
   }
 
   service_account {

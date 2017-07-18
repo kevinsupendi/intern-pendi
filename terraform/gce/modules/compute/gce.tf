@@ -73,7 +73,6 @@ resource "google_compute_instance" "master" {
 
   metadata {
     block-project-ssh-keys="${var.block_project_ssh_keys}"
-    ssh-keys = "pendi:${file("~/.ssh/id_rsa.pub")}"
   }
 
   metadata_startup_script = "${data.template_file.master.rendered}"
