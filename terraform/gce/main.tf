@@ -1,6 +1,7 @@
 module "compute" {
   source = "./modules/compute"
   gce_zone      = "${var.gce_zone}"
+  gce_region      = "${var.gce_region}"
   subnet = "${google_compute_subnetwork.subnet.name}"
   net_name="${var.net_name}"
   project_id="${var.project_id}"

@@ -4,6 +4,8 @@ variable "net_name" {}
 
 variable "gce_zone" {}
 
+variable "gce_region" {}
+
 variable "subnet" {}
 
 variable "gce_image" {}
