@@ -138,5 +138,8 @@ data "template_file" "ca-controller" {
 
   vars {
     node_name = "${var.master_name}-1"
+    project_id = "${var.project_id}"
+    gce_zone = "${var.gce_zone}"
+    node_group = "${var.node_group}"
   }
 }

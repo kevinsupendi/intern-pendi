@@ -23,7 +23,7 @@ spec:
           command:
             - ./cluster-autoscaler
             - --kubernetes=https://kubernetes.default
-            - --nodes=1:5:https://www.googleapis.com/compute/v1/projects/intern-kevin/zones/asia-northeast1-b/instanceGroups/node-group
+            - --nodes=1:5:https://www.googleapis.com/compute/v1/projects/${project_id}/zones/${gce_zone}/instanceGroups/${node_group}
             - --scale-down-enabled=true
             - --cloud-config=/var/lib/kubernetes/gce.conf
             - --cloud-provider=gce

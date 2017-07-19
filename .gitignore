@@ -2,6 +2,7 @@
 *.tfstate.*
 *.retry
 *.pem
+.terraform/
 certs/
 ansible/roles/certs/files/
 ansible/inventories/inv.ini
