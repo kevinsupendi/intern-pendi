@@ -1,50 +1,3 @@
-variable "project_id" {}
-
-variable "net_name" {}
-
-variable "gce_zone" {}
-
-variable "subnet" {}
-
-variable "gce_image" {}
-
-variable "num_master" {}
-
-variable "master_name" {}
-
-variable "master_type" {}
-
-variable "master_disk_size" {}
-
-variable "tags" {
-  type = "list"
-}
-
-variable "can_ip_forward" {}
-
-variable "svc_account_scopes" {
-  type = "list"
-}
-
-variable "block_project_ssh_keys" {}
-
-variable "etcd_version" {}
-
-variable "etcd_ips" {
-  type="list"
-}
-
-variable "scheduler_token" {}
-
-variable "controller_token" {}
-
-variable "svc_cluster_ip_range" {}
-
-variable "svc_node_port_range" {}
-
-variable "flannel_backend" {}
-
-
 resource "google_compute_instance" "master" {
   count = "${var.num_master}"
   name         = "${var.master_name}-${count.index + 1}"
@@ -60,6 +13,7 @@ resource "google_compute_instance" "master" {
 
   network_interface {
     subnetwork = "${var.subnet}"
+    address = "${cidrhost("${var.subnet_ip_cidr_range}","${count.index + var.ip_offset}")}"
     access_config {
       // Ephemeral IP
     }
@@ -75,5 +29,14 @@ resource "google_compute_instance" "master" {
     block-project-ssh-keys="${var.block_project_ssh_keys}"
   }
 
-  metadata_startup_script = "${data.template_file.master.rendered}"
+  metadata_startup_script = "${element(data.template_file.master.*.rendered, count.index)}"
+}
+
+resource "null_resource" "masters" {
+  count    = "${var.num_master}"
+  triggers {
+    ip_lists = "${cidrhost("${var.subnet_ip_cidr_range}", count.index + var.ip_offset)}"
+    name_lists = "${var.master_name}-${count.index + 1}"
+    etcd_ips = "${var.master_name}-${count.index + 1}=https://${cidrhost("${var.subnet_ip_cidr_range}", count.index + var.ip_offset)}:2380"
+  }
 }

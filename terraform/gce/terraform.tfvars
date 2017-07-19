@@ -43,8 +43,7 @@ cluster_cidr="10.200.0.0/16"
 
 # DONT CHANGE THIS YET
 master_name="master"
+ip_offset = 4
 subnet_ip_cidr_range="10.240.16.0/24"
-num_master=1
-etcd_ips=["master-1=https://10.240.16.2:2380"]
-master_lb_ip="10.240.16.2"
-etcd_endpoints="https://10.240.16.2:2379"
+num_master=3
+lb_offset = 3

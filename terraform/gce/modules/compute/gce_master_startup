@@ -99,7 +99,7 @@ kind: Config
 clusters:
 - cluster:
     certificate-authority: /var/lib/kubernetes/ca.pem
-    server: https://${master_lb_ip}:6443
+    server: https://${internal_ip}:6443
   name: kubernetes
 contexts:
 - context:
@@ -123,7 +123,7 @@ kind: Config
 clusters:
 - cluster:
     certificate-authority: /var/lib/kubernetes/ca.pem
-    server: https://${master_lb_ip}:6443
+    server: https://${internal_ip}:6443
   name: kubernetes
 contexts:
 - context:

@@ -4,6 +4,8 @@ module "compute" {
   subnet = "${google_compute_subnetwork.subnet.name}"
   net_name="${var.net_name}"
   project_id="${var.project_id}"
+  subnet_ip_cidr_range="${var.subnet_ip_cidr_range}"
+  ip_offset="${var.ip_offset}"
 
   gce_image="${var.gce_image}"
   num_master="${var.num_master}"
@@ -24,101 +26,18 @@ module "compute" {
   docker_version="${var.docker_version}"
   flannel_version="${var.flannel_version}"
   kubelet_token="${var.kubelet_token}"
-  master_lb_ip="${var.master_lb_ip}"
-  etcd_endpoints="${var.etcd_endpoints}"
+  lb_offset="${var.lb_offset}"
   cluster_dns="${var.cluster_dns}"
   cluster_domain="${var.cluster_domain}"
   cluster_cidr="${var.cluster_cidr}"
 
   etcd_version="${var.etcd_version}"
-  etcd_ips="${var.etcd_ips}"
   scheduler_token="${var.scheduler_token}"
   controller_token="${var.controller_token}"
   svc_cluster_ip_range="${var.svc_cluster_ip_range}"
   svc_node_port_range="${var.svc_node_port_range}"
   flannel_backend="${var.flannel_backend}"
 }
-
-
-variable "project_id" {}
-
-variable "subnet_ip_cidr_range" {}
-
-variable "gce_region" {}
-
-variable "gce_zone" {}
-
-variable "net_name" {}
-
-variable "subnet_name" {}
-
-variable "gce_image" {}
-
-variable "num_master" {}
-
-variable "master_name" {}
-
-variable "master_type" {}
-
-variable "master_disk_size" {}
-
-variable "tags" {
-  type = "list"
-}
-
-variable "can_ip_forward" {}
-
-variable "svc_account_scopes" {
-  type = "list"
-}
-
-variable "block_project_ssh_keys" {}
-
-variable "node_type" {}
-
-variable "node_group" {}
-
-variable "node_group_size" {}
-
-variable "base_instance_name" {}
-
-variable "template_name" {}
-
-variable "kubernetes_version" {}
-
-variable "docker_version" {}
-
-variable "flannel_version" {}
-
-variable "kubelet_token" {}
-
-variable "master_lb_ip" {}
-
-variable "etcd_endpoints" {}
-
-variable "cluster_dns" {}
-
-variable "cluster_domain" {}
-
-variable "cluster_cidr" {}
-
-variable "etcd_version" {}
-
-variable "etcd_ips" {
-  type="list"
-}
-
-variable "scheduler_token" {}
-
-variable "controller_token" {}
-
-variable "svc_cluster_ip_range" {}
-
-variable "svc_node_port_range" {}
-
-variable "flannel_backend" {}
-
-variable "cred_path" {}
 
 
 # Configure the Google Cloud provider
@@ -156,4 +75,35 @@ resource "google_compute_firewall" "fw" {
   }
 
   source_ranges = ["0.0.0.0/0"]
+}
+
+resource "google_compute_forwarding_rule" "master_lb" {
+  name       = "master-lb"
+  backend_service = "${google_compute_region_backend_service.masters.self_link}"
+  ip_address = "${cidrhost("${var.subnet_ip_cidr_range}", var.lb_offset)}"
+  load_balancing_scheme = "INTERNAL"
+  network = "${google_compute_network.network.self_link}"
+  ports = ["6443", "80", "443","8080"]
+  subnetwork = "${google_compute_subnetwork.subnet.self_link}"
+}
+
+resource "google_compute_region_backend_service" "masters" {
+  name        = "masters"
+
+  backend {
+    group = "${module.compute.masters_backend}"
+  }
+
+  health_checks = ["${google_compute_health_check.default.self_link}"]
+}
+
+resource "google_compute_health_check" "default" {
+  name = "test"
+
+  timeout_sec        = 1
+  check_interval_sec = 1
+
+  tcp_health_check {
+    port = "80"
+  }
 }
