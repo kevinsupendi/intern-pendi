@@ -2,6 +2,7 @@
 resource "google_compute_instance_template" "igm" {
   name        = "${var.template_name}"
 
+  depends_on = ["null_resource.certs"]
   tags = "${var.tags}"
   machine_type         = "${var.node_type}"
   can_ip_forward       = "${var.can_ip_forward}"

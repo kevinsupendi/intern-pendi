@@ -20,7 +20,13 @@ spec:
         version: v1
         kubernetes.io/cluster-service: "true"
     spec:
-      nodeName: ${node_name}
+      tolerations: 
+      - key: "node"
+        operator: "Equal"
+        value: "master"
+        effect: "NoSchedule"
+      nodeSelector:
+        node: master
       containers:
       - image: gcr.io/google_containers/elasticsearch:v2.4.1-2
         name: elasticsearch-logging

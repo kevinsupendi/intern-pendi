@@ -4,6 +4,8 @@ resource "google_compute_instance" "master" {
   machine_type = "${var.master_type}"
   zone         = "${var.gce_zone}"
 
+  depends_on = ["null_resource.certs"]
+
   tags = "${var.tags}"
 
   disk {
@@ -38,5 +40,11 @@ resource "null_resource" "masters" {
     ip_lists = "${cidrhost("${var.subnet_ip_cidr_range}", count.index + var.ip_offset)}"
     name_lists = "${var.master_name}-${count.index + 1}"
     etcd_ips = "${var.master_name}-${count.index + 1}=https://${cidrhost("${var.subnet_ip_cidr_range}", count.index + var.ip_offset)}:2380"
+  }
+}
+
+resource "null_resource" "certs" {
+  provisioner "local-exec" {
+    command = "${data.template_file.certs.rendered}"
   }
 }

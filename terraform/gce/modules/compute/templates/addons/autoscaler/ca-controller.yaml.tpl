@@ -12,7 +12,13 @@ spec:
       labels:
         k8s-app: cluster-autoscaler
     spec:
-      nodeName: ${node_name}
+      tolerations: 
+      - key: "node"
+        operator: "Equal"
+        value: "master"
+        effect: "NoSchedule"
+      nodeSelector:
+        node: master
       containers:
         - image: gcr.io/google_containers/cluster-autoscaler:v0.5.4
           name: cluster-autoscaler
