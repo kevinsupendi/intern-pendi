@@ -1,36 +1,9 @@
-variable "template_name" {}
-
-variable "node_type" {}
-
-variable "node_group" {}
-
-variable "node_group_size" {}
-
-variable "base_instance_name" {}
-
-variable "kubernetes_version" {}
-
-variable "docker_version" {}
-
-variable "flannel_version" {}
-
-variable "kubelet_token" {}
-
-variable "master_lb_ip" {}
-
-variable "etcd_endpoints" {}
-
-variable "cluster_dns" {}
-
-variable "cluster_domain" {}
-
-variable "cluster_cidr" {}
-
 
 resource "google_compute_instance_template" "igm" {
   name        = "${var.template_name}"
   project = "${var.project_id}"
   region = "${var.gce_region}"
+  depends_on = ["null_resource.certs"]
   tags = "${var.tags}"
   machine_type         = "${var.node_type}"
   can_ip_forward       = "${var.can_ip_forward}"
@@ -79,4 +52,12 @@ resource "google_compute_instance_group_manager" "igm" {
   zone               = "${var.gce_zone}"
 
   target_size  = "${var.node_group_size}"
+}
+
+resource "google_compute_instance_group" "masters" {
+  name        = "masters"
+
+  instances = ["${google_compute_instance.master.*.self_link}"]
+
+  zone = "${var.gce_zone}"
 }

@@ -15,7 +15,13 @@ spec:
       labels:
         app: kubernetes-dashboard
     spec:
-      nodeName: ${node_name}
+      tolerations: 
+      - key: "node"
+        operator: "Equal"
+        value: "master"
+        effect: "NoSchedule"
+      nodeSelector:
+        node: master
       containers:
       - name: kubernetes-dashboard
         image: gcr.io/google_containers/kubernetes-dashboard-amd64:v1.6.0

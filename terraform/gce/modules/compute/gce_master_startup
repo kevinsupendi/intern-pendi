@@ -99,7 +99,7 @@ kind: Config
 clusters:
 - cluster:
     certificate-authority: /var/lib/kubernetes/ca.pem
-    server: https://${master_lb_ip}:6443
+    server: https://${internal_ip}:6443
   name: kubernetes
 contexts:
 - context:
@@ -123,7 +123,7 @@ kind: Config
 clusters:
 - cluster:
     certificate-authority: /var/lib/kubernetes/ca.pem
-    server: https://${master_lb_ip}:6443
+    server: https://${internal_ip}:6443
   name: kubernetes
 contexts:
 - context:
@@ -167,6 +167,7 @@ ExecStart=/usr/bin/kube-apiserver \
   --cloud-provider=gce \
   --cloud-config=/var/lib/kubernetes/gce.conf \
   --enable-swagger-ui=true \
+  --etcd-quorum-read=true \
   --etcd-cafile=/var/lib/kubernetes/ca.pem \
   --kubelet-certificate-authority=/var/lib/kubernetes/ca.pem \
   --etcd-servers=${etcd_endpoints} \
@@ -384,7 +385,8 @@ sudo systemctl start kube-proxy
 sleep 10s
 
 #Deploy addons
-kubectl cordon master-1
+kubectl label nodes $$(hostname -s) node=master
+kubectl taint nodes $$(hostname -s) node=master:NoSchedule
 
 mkdir /tmp/addons
 cat > /tmp/addons/kubedns.yaml<<EOF

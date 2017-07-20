@@ -15,7 +15,13 @@ spec:
       labels:
         app: kubedns
     spec:
-      nodeName: ${node_name}
+      tolerations: 
+      - key: "node"
+        operator: "Equal"
+        value: "master"
+        effect: "NoSchedule"
+      nodeSelector:
+        node: master
       volumes:
       - name: "kubeconfig"
         hostPath:

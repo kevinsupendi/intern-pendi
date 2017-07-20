@@ -11,7 +11,13 @@ spec:
         task: monitoring
         k8s-app: grafana
     spec:
-      nodeName: ${node_name}
+      tolerations: 
+      - key: "node"
+        operator: "Equal"
+        value: "master"
+        effect: "NoSchedule"
+      nodeSelector:
+        node: master
       containers:
       - name: grafana
         image: gcr.io/google_containers/heapster-grafana-amd64:v4.0.2

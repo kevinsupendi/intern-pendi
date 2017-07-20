@@ -50,7 +50,7 @@ cfssl gencert -initca ca-csr.json | cfssljson -bare ca
 echo '{
   "CN": "*.c.intern-kevin.internal",
   "hosts": [
-    "10.32.0.1","10.240.16.2","10.240.16.3","*","localhost","127.0.0.1","kubernetes.default"
+    "10.32.0.1",${masters_ip},${masters_name},"${lb_ip}","*","localhost","127.0.0.1","kubernetes.default"
   ],
   "key": {
     "algo": "rsa",
@@ -79,6 +79,7 @@ perl -i -pe 's/kubernetespem/`cat kubernetes.pem`/e' modules/compute/gce_master_
 perl -i -pe 's/kuberneteskeypem/`cat kubernetes-key.pem`/e' modules/compute/gce_master_startup.sh.tpl
 
 #Cleaning up
+
 rm ca.csr
 rm ca-config.json
 rm ca-csr.json

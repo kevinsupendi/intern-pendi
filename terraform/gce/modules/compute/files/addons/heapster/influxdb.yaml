@@ -11,7 +11,13 @@ spec:
         task: monitoring
         k8s-app: influxdb
     spec:
-      nodeName: ${node_name}
+      tolerations: 
+      - key: "node"
+        operator: "Equal"
+        value: "master"
+        effect: "NoSchedule"
+      nodeSelector:
+        node: master
       containers:
       - name: influxdb
         image: gcr.io/google_containers/heapster-influxdb-amd64:v1.1.1
