@@ -26,7 +26,7 @@ module "compute" {
   docker_version="${var.docker_version}"
   flannel_version="${var.flannel_version}"
   kubelet_token="${var.kubelet_token}"
-  lb_offset="${var.lb_offset}"
+  lb_offset="${var.num_master > 1 ? var.lb_offset : var.ip_offset}"
   cluster_dns="${var.cluster_dns}"
   cluster_domain="${var.cluster_domain}"
   cluster_cidr="${var.cluster_cidr}"
@@ -78,6 +78,7 @@ resource "google_compute_firewall" "fw" {
 }
 
 resource "google_compute_forwarding_rule" "master_lb" {
+  count = "${var.num_master > 1 ? 1 : 0}"
   name       = "master-lb"
   backend_service = "${google_compute_region_backend_service.masters.self_link}"
   ip_address = "${cidrhost("${var.subnet_ip_cidr_range}", var.lb_offset)}"
@@ -89,7 +90,7 @@ resource "google_compute_forwarding_rule" "master_lb" {
 
 resource "google_compute_region_backend_service" "masters" {
   name        = "masters"
-
+  count = "${var.num_master > 1 ? 1 : 0}"
   backend {
     group = "${module.compute.masters_backend}"
   }
@@ -98,12 +99,10 @@ resource "google_compute_region_backend_service" "masters" {
 }
 
 resource "google_compute_health_check" "default" {
-  name = "test"
-
-  timeout_sec        = 1
-  check_interval_sec = 1
-
-  tcp_health_check {
-    port = "80"
+  name = "masters"
+  count = "${var.num_master > 1 ? 1 : 0}"
+  https_health_check {
+    port = "6443"
+    request_path = "/healthz"
   }
 }

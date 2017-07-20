@@ -7,10 +7,13 @@ gce_region="asia-northeast1"
 gce_zone="asia-northeast1-b"
 net_name="kubenet"
 subnet_name="kubesubnet"
+subnet_ip_cidr_range="10.240.16.0/24"
 
 # COMPUTE
 gce_image="ubuntu-os-cloud/ubuntu-1604-lts"
+master_name="master"
 master_type="n1-standard-1"
+num_master=1
 master_disk_size=10
 tags=["node"]
 can_ip_forward="true"
@@ -18,6 +21,8 @@ svc_account_scopes=["compute-rw"]
 block_project_ssh_keys="true"
 
 # MASTER SCRIPT
+ip_offset = 4
+lb_offset = 3
 etcd_version="3.1.8"
 scheduler_token="changeme"
 controller_token="changeme"
@@ -40,10 +45,3 @@ kubelet_token="changeme"
 cluster_dns="10.32.0.10"
 cluster_domain="cluster.local"
 cluster_cidr="10.200.0.0/16"
-
-# DONT CHANGE THIS YET
-master_name="master"
-ip_offset = 4
-subnet_ip_cidr_range="10.240.16.0/24"
-num_master=3
-lb_offset = 3
