@@ -19,8 +19,8 @@ Create Kubernetes cluster manually with this steps
 
 
 ### After setting up
-By default all addons below will be automatically deployed in the process, except for Jenkins and Kibana application.
-You can try deploying several application or change deployed addons configuration.
+By default only DNS, Dashboard, Cluster Autoscaler and Storageclass addons deployed.
+You can try deploying other application or change deployed addons configuration.
 
 Here is a few suggestions of useful addons and Kubernetes resources :
 - [DNS](Documentation/addons/dns.md)

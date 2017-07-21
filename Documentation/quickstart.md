@@ -111,20 +111,6 @@ Even though your nodes are ready, you should test if your Service and Deployment
     ```
 
 
-### Testing Addons and Ingress
-Ingress has URL mapping feature so deployed addons can be accessed easily from the browser.
-See which node has nginx-ingress-controller pod.
-
-```
-kubectl -n kube-system get po -o wide
-```
-
-Test if addons and Ingress have worked correctly by accessing these urls (don't forget the slash at the end of the link) :
-
-- http://${NODE_EXTERNAL_IP}/dashboard/
-- http://${NODE_EXTERNAL_IP}/grafana/
-
-
 ### Testing Dynamic Provisioning
 Storage class is deployed by default and ready to use Dynamic Provisioning feature.
 

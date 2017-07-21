@@ -3,10 +3,11 @@
 Dashboard is a handy tool to manage Kubernetes Cluster from Web GUI. It has similar function with kubectl. You can view logs, see pods, nodes, and deploy application.
 If you configure Heapster, Dashboard can also show graph resources too.
 
-Deploy addons with Ansible script addons.yml or use this command in root project directory
+Copy file in terraform/gce/modules/compute/files/addons/kubedashboard/kube-dashboard.yaml to master VM
+Deploy addons with this command in master VM
 
 ```
-kubectl apply -f deployment-example/addons/kube-dashboard.yaml
+kubectl apply -f copied_files.yaml
 ```
 
 More information about kube-dashboard can be found in Kubernetes [docs](https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/)

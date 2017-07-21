@@ -395,26 +395,8 @@ EOF
 cat > /tmp/addons/kubedashboard.yaml<<EOF
 ${kubedashboard}
 EOF
-cat > /tmp/addons/default-backend.yaml<<EOF
-${ingress_backend}
-EOF
-cat > /tmp/addons/system.yaml<<EOF
-${ingress_rule}
-EOF
-cat > /tmp/addons/nginx-ingress-controller.yaml<<EOF
-${ingress_controller}
-EOF
-cat > /tmp/addons/grafana.yaml<<EOF
-${grafana}
-EOF
-cat > /tmp/addons/heapster.yaml<<EOF
-${heapster}
-EOF
 cat > /tmp/addons/ca-controller.yaml<<EOF
 ${ca-controller}
-EOF
-cat > /tmp/addons/influxdb.yaml<<EOF
-${influxdb}
 EOF
 cat > /tmp/addons/default.yaml<<EOF
 ${storageclass}
