@@ -2,9 +2,9 @@
 
 #Generate certificates
 
-echo 'capem' > ca.pem
-echo 'kubernetespem' > kubernetes.pem
-echo 'kuberneteskeypem' > kubernetes-key.pem
+echo '${capem}' > ca.pem
+echo '${kubernetespem}' > kubernetes.pem
+echo '${kuberneteskeypem}' > kubernetes-key.pem
 
 
 mkdir /etc/etcd/

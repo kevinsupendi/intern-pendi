@@ -141,7 +141,7 @@ metadata:
 spec:
   selector:
      app: kubedns
-  clusterIP: 10.32.0.10 
+  clusterIP: ${cluster_ip}
   ports:
   - name: dns
     port: 53

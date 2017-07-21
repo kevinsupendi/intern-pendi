@@ -1,8 +1,11 @@
 data "template_file" "master" {
-  template = "${file("${path.module}/gce_master_startup.sh.tpl")}"
+  template = "${file("${path.module}/gce_master_startup")}"
   count = "${var.num_master}"
-
   vars {
+    capem = "${data.external.certs.result["capem"]}"
+    kubernetespem = "${data.external.certs.result["kubernetespem"]}"
+    kuberneteskeypem = "${data.external.certs.result["kuberneteskeypem"]}"
+
     kubernetes_version = "${var.kubernetes_version}"
     docker_version="${var.docker_version}"
     flannel_version="${var.flannel_version}"
@@ -14,7 +17,7 @@ data "template_file" "master" {
     kubelet_token="${var.kubelet_token}"
     master_lb_ip="${cidrhost("${var.subnet_ip_cidr_range}", var.lb_offset)}"
     etcd_endpoints="${join(",", formatlist("https://%s:2379",null_resource.masters.*.triggers.ip_lists))}"
-    cluster_dns="${var.cluster_dns}"
+    cluster_dns="${cidrhost("${var.svc_cluster_ip_range}", 10)}"
     cluster_domain="${var.cluster_domain}"
     cluster_cidr="${var.cluster_cidr}"
 
@@ -30,7 +33,7 @@ data "template_file" "master" {
     flannel_backend="${var.flannel_backend}"
     num_master="${var.num_master}"
 
-    kubedns="${file("${path.module}/files/addons/kubedns/kubedns.yaml")}"
+    kubedns="${data.template_file.kubedns.rendered}"
     kubedashboard="${file("${path.module}/files/addons/kubedashboard/kube-dashboard.yaml")}"
     ingress_backend="${file("${path.module}/files/addons/ingress/default-backend.yaml")}"
     ingress_rule="${file("${path.module}/files/addons/ingress/system.yaml")}"
@@ -49,9 +52,12 @@ data "template_file" "master" {
 }
 
 data "template_file" "node" {
-  template = "${file("${path.module}/gce_template_startup.sh.tpl")}"
-
+  template = "${file("${path.module}/gce_template_startup")}"
   vars {
+    capem = "${data.external.certs.result["capem"]}"
+    kubernetespem = "${data.external.certs.result["kubernetespem"]}"
+    kuberneteskeypem = "${data.external.certs.result["kuberneteskeypem"]}"
+
     kubernetes_version = "${var.kubernetes_version}"
     docker_version="${var.docker_version}"
     flannel_version="${var.flannel_version}"
@@ -63,7 +69,7 @@ data "template_file" "node" {
     etcd_endpoints="${join(",", formatlist("https://%s:2379",null_resource.masters.*.triggers.ip_lists))}"
     kubelet_token="${var.kubelet_token}"
     master_lb_ip="${cidrhost("${var.subnet_ip_cidr_range}", var.lb_offset)}"
-    cluster_dns="${var.cluster_dns}"
+    cluster_dns="${cidrhost("${var.svc_cluster_ip_range}", 10)}"
     cluster_domain="${var.cluster_domain}"
     cluster_cidr="${var.cluster_cidr}"
   }
@@ -79,12 +85,22 @@ data "template_file" "ca-controller" {
   }
 }
 
-data "template_file" "certs" {
-  template = "${file("${path.module}/certs.sh.tpl")}"
+data "template_file" "kubedns" {
+  template = "${file("${path.module}/templates/addons/kubedns/kubedns.yaml.tpl")}"
 
   vars {
+    cluster_ip = "${cidrhost("${var.svc_cluster_ip_range}", 10)}"
+  }
+}
+
+
+data "external" "certs" {
+  program = ["bash","${path.module}/certs.sh"]
+
+  query = {
     masters_ip="${join("," , formatlist("\"%s\"",null_resource.masters.*.triggers.ip_lists))}"
     masters_name="${join("," , formatlist("\"%s\"",null_resource.masters.*.triggers.name_lists))}"
     lb_ip="${cidrhost("${var.subnet_ip_cidr_range}", var.lb_offset)}"
+    kube_svc="${cidrhost("${var.svc_cluster_ip_range}", 1)}"
   }
 }

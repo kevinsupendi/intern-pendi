@@ -3,7 +3,6 @@ resource "google_compute_instance_template" "igm" {
   name        = "${var.template_name}"
   project = "${var.project_id}"
   region = "${var.gce_region}"
-  depends_on = ["null_resource.certs"]
   tags = "${var.tags}"
   machine_type         = "${var.node_type}"
   can_ip_forward       = "${var.can_ip_forward}"

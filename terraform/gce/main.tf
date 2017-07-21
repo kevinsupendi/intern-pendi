@@ -28,7 +28,6 @@ module "compute" {
   flannel_version="${var.flannel_version}"
   kubelet_token="${var.kubelet_token}"
   lb_offset="${var.num_master > 1 ? var.lb_offset : var.ip_offset}"
-  cluster_dns="${var.cluster_dns}"
   cluster_domain="${var.cluster_domain}"
   cluster_cidr="${var.cluster_cidr}"
 

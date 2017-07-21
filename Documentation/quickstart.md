@@ -7,15 +7,6 @@ See below for list of addons.
 - Install Terraform (Recommended version : >0.9.8) [link](https://www.terraform.io/intro/getting-started/install.html)
 
 
-### Create credentials
-
-1. In the terminal, go to terraform/gce/
-2. Run ./certs.sh, this script will generate certs and automatically put it in Terraform startup script.
-
-    ```
-    ./certs.sh
-    ```
-
 ### Securing Kubernetes
 In this project I use token authentication for Kubelet, Scheduler, and Controller-manager. 
 Change tokens value in terraform/gce/terraform.tfvars
@@ -46,15 +37,23 @@ Create VMs (I used GCE in this project) using terraform. Terraform can create an
 1. Go to terraform directory
 2. Configure the cloud provider in terraform/gce/terraform.tfvars, especially **project_id** and **cred_path**. Here is how to get gce json credentials for cred_path
 [here](https://www.terraform.io/docs/providers/google/index.html#authentication-json-file), change the file path to your liking
-3. Configure other variables in terraform/gce/terraform.tfvars. Multi master setup is not yet supported
-4. Now open terminal in the same directory, run command :
+3. Configure other variables in terraform/gce/terraform.tfvars. Multi master setup is now supported. If you have num_master > 1, Terraform will automatically create Load Balancer for master.
+4. Master ip is created sequentially from ip_offset variable. If there are 2 master and ip_offset 2 and subnet range 10.20.0.0/24, then master-1 will have IP 10.20.0.2 and master-2 10.20.0.3.
+5. Lb_offset variable will be used if num_master > 1. Change it so it will not collide with master and node IPs
+6. Now open terminal in the same directory, run command :
 
     ```
     terraform get
     terraform apply
     ```
 
-5. If the command ran succesfully, you should have Kubernetes cluster running
+    Later if you want to delete or want to restart setup, use this command to delete all resources :
+
+    ```
+    terraform destroy
+    ```
+
+7. If the command ran succesfully, you should have Kubernetes cluster running
 
 You could check if the nodes has registered using this command in master instance 
 

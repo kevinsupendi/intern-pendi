@@ -62,8 +62,6 @@ variable "kubelet_token" {}
 
 variable "lb_offset" {}
 
-variable "cluster_dns" {}
-
 variable "cluster_domain" {}
 
 variable "cluster_cidr" {}
