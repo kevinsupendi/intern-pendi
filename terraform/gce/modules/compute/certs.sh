@@ -56,7 +56,7 @@ cfssl gencert -initca ca-csr.json  2>/dev/null | cfssljson -bare ca
 echo '{
   "CN": "*.c.intern-kevin.internal",
   "hosts": [
-    ' "\"$kube_svc\"" ',' "$masters_ip" ',' "$masters_name" ',' "\"$lb_ip\"" ',"*","localhost","127.0.0.1","kubernetes.default"
+    ' "\"$kube_svc\"" ',' "$masters_ip" ',' "$masters_name" ',' "\"$lb_ip\"" ',"localhost","127.0.0.1","kubernetes.default","kubernetes","kubernetes.default.svc","kubernetes.default.svc.cluster.local"
   ],
   "key": {
     "algo": "rsa",
