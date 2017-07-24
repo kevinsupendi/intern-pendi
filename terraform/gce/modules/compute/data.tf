@@ -5,6 +5,8 @@ data "template_file" "master" {
     capem = "${data.external.certs.result["capem"]}"
     kubernetespem = "${data.external.certs.result["kubernetespem"]}"
     kuberneteskeypem = "${data.external.certs.result["kuberneteskeypem"]}"
+    kubeletpem = "${data.external.certs.result["kubeletpem"]}"
+    kubeletkeypem = "${data.external.certs.result["kubeletkeypem"]}"
 
     kubernetes_version = "${var.kubernetes_version}"
     docker_version="${var.docker_version}"
@@ -57,6 +59,8 @@ data "template_file" "node" {
     capem = "${data.external.certs.result["capem"]}"
     kubernetespem = "${data.external.certs.result["kubernetespem"]}"
     kuberneteskeypem = "${data.external.certs.result["kuberneteskeypem"]}"
+    kubeletpem = "${data.external.certs.result["kubeletpem"]}"
+    kubeletkeypem = "${data.external.certs.result["kubeletkeypem"]}"
 
     kubernetes_version = "${var.kubernetes_version}"
     docker_version="${var.docker_version}"

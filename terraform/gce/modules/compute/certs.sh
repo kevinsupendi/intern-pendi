@@ -52,6 +52,34 @@ echo '{
 
 cfssl gencert -initca ca-csr.json  2>/dev/null | cfssljson -bare ca
 
+
+cat > kubelet-csr.json <<EOF
+{
+  "CN": "system:kubelet",
+  "hosts": [],
+  "key": {
+    "algo": "rsa",
+    "size": 2048
+  },
+  "names": [
+    {
+      "C": "US",
+      "L": "Portland",
+      "O": "system:kubelet",
+      "OU": "Cluster",
+      "ST": "Oregon"
+    }
+  ]
+}
+EOF
+
+cfssl gencert \
+  -ca=ca.pem \
+  -ca-key=ca-key.pem \
+  -config=ca-config.json \
+  -profile=kubernetes \
+  kubelet-csr.json | cfssljson -bare kubelet
+
 #Generate server certificate
 echo '{
   "CN": "*.c.intern-kevin.internal",
@@ -79,8 +107,10 @@ cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=kube
 capem=$(cat ca.pem)
 kubernetespem=$(cat kubernetes.pem)
 kuberneteskeypem=$(cat kubernetes-key.pem)
+kubeletpem=$(cat kubelet.pem)
+kubeletkeypem=$(cat kubelet-key.pem)
 
-jq -n --arg capem "$capem" --arg kubernetespem "$kubernetespem" --arg kuberneteskeypem "$kuberneteskeypem" '{"capem":$capem, "kubernetespem":$kubernetespem, "kuberneteskeypem":$kuberneteskeypem}'
+jq -n --arg kubeletpem "$kubeletpem" --arg kubeletkeypem "$kubeletkeypem" --arg capem "$capem" --arg kubernetespem "$kubernetespem" --arg kuberneteskeypem "$kuberneteskeypem" '{"capem":$capem, "kubernetespem":$kubernetespem, "kuberneteskeypem":$kuberneteskeypem, "kubeletpem":$kubeletpem, "kubeletkeypem":$kubeletkeypem}'
 
 #Cleaning up
 
@@ -93,3 +123,7 @@ rm kubernetes-csr.json
 rm ca.pem
 rm kubernetes.pem
 rm kubernetes-key.pem
+rm kubelet.pem
+rm kubelet-key.pem
+rm kubelet.csr
+rm kubelet-csr.json

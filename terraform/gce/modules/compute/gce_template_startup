@@ -5,11 +5,15 @@
 echo '${capem}' > ca.pem
 echo '${kubernetespem}' > kubernetes.pem
 echo '${kuberneteskeypem}' > kubernetes-key.pem
+echo '${kubeletpem}' > kubelet.pem
+echo '${kubeletkeypem}' > kubelet-key.pem
 
 mkdir /var/lib/kubernetes
 mv ca.pem /var/lib/kubernetes/ca.pem
 mv kubernetes.pem /var/lib/kubernetes/kubernetes.pem
 mv kubernetes-key.pem /var/lib/kubernetes/kubernetes-key.pem
+mv kubelet.pem /var/lib/kubernetes/kubelet.pem
+mv kubelet-key.pem /var/lib/kubernetes/kubelet-key.pem
 
 #Install Flanneld
 wget https://github.com/coreos/flannel/releases/download/v${flannel_version}/flannel-v${flannel_version}-linux-amd64.tar.gz
@@ -113,7 +117,7 @@ Description=Kubernetes Kubelet
 Documentation=https://github.com/GoogleCloudPlatform/kubernetes
 
 [Service]
-ExecStart=/usr/bin/sudo /usr/bin/kubelet --allow-privileged=true --client-ca-file=/var/lib/kubernetes/ca.pem --require-kubeconfig=true --register-node=true --cloud-provider=gce --cloud-config=/var/lib/kubernetes/gce.conf --cluster-dns=${cluster_dns}   --cluster-domain=${cluster_domain}   --container-runtime=docker   --docker=unix:///var/run/docker.sock   --kubeconfig=/var/lib/kubelet/kubeconfig   --serialize-image-pulls=false   --tls-cert-file=/var/lib/kubernetes/kubernetes.pem   --tls-private-key-file=/var/lib/kubernetes/kubernetes-key.pem   --v=2
+ExecStart=/usr/bin/sudo /usr/bin/kubelet --allow-privileged=true --require-kubeconfig=true --register-node=true --cloud-provider=gce --cloud-config=/var/lib/kubernetes/gce.conf --cluster-dns=${cluster_dns}   --cluster-domain=${cluster_domain}   --container-runtime=docker   --docker=unix:///var/run/docker.sock   --kubeconfig=/var/lib/kubelet/kubeconfig   --serialize-image-pulls=false --v=2
 Restart=on-failure
 RestartSec=5
 
