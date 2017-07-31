@@ -4,6 +4,7 @@ This instructions will install Kubernetes cluster on GCP with default configurat
 In the end of this guide, you will have a working Kubernetes cluster without addons.
 
 ### Prerequisites
+- **High memory (>8GB RAM)**
 - Install Terraform (Recommended version : >0.9.8) [link](https://www.terraform.io/intro/getting-started/install.html)
 - Docker [link](https://www.docker.com/get-docker)
 - Moby & LinuxKit [link](https://github.com/linuxkit/linuxkit)
@@ -59,6 +60,10 @@ Create VMs (I used GCE in this project) using terraform. Terraform can create an
 
 7. If the command ran succesfully, you should have Kubernetes cluster running
 
+### Connecting to instances
+You can only connect to LinuxKit instances using serial port connection in Google Cloud Console
+![serial console](serial_console.png)
+
 ### Install kubectl on LinuxKit
 
 Run this command to install kubectl
@@ -68,6 +73,12 @@ apk update && apk add ca-certificates && update-ca-certificates && apk add opens
 wget https://storage.googleapis.com/kubernetes-release/release/v1.6.4/bin/linux/amd64/kubectl
 chmod +x kubectl
 mv kubectl /bin/kubectl
+```
+
+Check if all kubernetes containers are running
+
+```
+ctr t list
 ```
 
 You could check if the nodes has registered using this command in master instance 
