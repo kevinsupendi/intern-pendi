@@ -80,13 +80,13 @@ resource "null_resource" "kubenode" {
 resource "null_resource" "node_image" {
   depends_on = ["null_resource.kubenode","null_resource.certs","null_resource.kubeconfig","null_resource.gce_conf"]
   provisioner "local-exec" {
-    command = "moby build -output gcp ${path.module}/temp/kubenode.yml && linuxkit push gcp -project ${project_id} -bucket ${bucket_name} kubenode.img.tar.gz"
+    command = "sudo moby build -output gcp ${path.module}/temp/kubenode.yml && sudo linuxkit push gcp -project ${var.project_id} -bucket ${var.bucket_name} kubenode.img.tar.gz"
   }
 }
 
 resource "null_resource" "master_image" {
   depends_on = ["null_resource.kubemaster","null_resource.certs","null_resource.kubeconfig","null_resource.gce_conf","null_resource.token","null_resource.node_image"]
   provisioner "local-exec" {
-    command = "moby build -output gcp ${path.module}/temp/kubemaster.yml && linuxkit push gcp -project ${project_id} -bucket ${bucket_name} kubemaster.img.tar.gz"
+    command = "sudo moby build -output gcp ${path.module}/temp/kubemaster.yml && sudo linuxkit push gcp -project ${var.project_id} -bucket ${var.bucket_name} kubemaster.img.tar.gz"
   }
 }

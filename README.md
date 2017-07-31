@@ -32,6 +32,10 @@ Here is a few suggestions of useful addons and Kubernetes resources :
 - [StorageClass](Documentation/addons/storage.md)
 
 
+### Docker LinuxKit
+Run Kubernetes cluster in Docker LinuxKit.
+[here](Documentation/linuxkit.md)
+
 ### Notes
 Notes, hacks and limitations [Notes](Notes.md)
 
