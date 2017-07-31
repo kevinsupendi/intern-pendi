@@ -80,57 +80,6 @@ services:
     rootfsPropagation: shared
     image: gcr.io/google-containers/kube-scheduler-amd64:v1.6.4
     command: ["kube-scheduler","--leader-elect=true","--master=http://127.0.0.1:8080","--v=2"]
-  - name: flannel
-    binds:
-     - /var:/var:rshared,rbind
-     - /etc/resolv.conf:/etc/resolv.conf
-     - /etc/kubernetes:/var/lib/kubernetes:rshared,rbind
-    rootfsPropagation: shared
-    image: quay.io/coreos/flannel:v0.7.0-amd64
-    command: ["/opt/bin/flanneld","--etcd-endpoints=https://10.148.0.4:2379","--etcd-keyfile=/var/lib/kubernetes/kubernetes-key.pem","--etcd-certfile=/var/lib/kubernetes/kubernetes.pem"
-,"--etcd-cafile=/var/lib/kubernetes/ca.pem","--ip-masq=true"]
-  - name: docker
-    image: docker:17.06.0-ce-dind
-    capabilities:
-     - all
-    pid: host
-    mounts:
-     - type: cgroup
-       options: ["rw","nosuid","noexec","nodev","relatime"]
-    binds:
-     - /dev:/dev
-     - /etc/resolv.conf:/etc/resolv.conf
-     - /lib/modules:/lib/modules
-     - /var:/var:rshared,rbind
-     - /etc/cni:/etc/cni:rshared,rbind
-     - /opt/cni:/opt/cni:rshared,rbind
-    rootfsPropagation: shared
-    command: ["/usr/local/bin/docker-init", "/usr/local/bin/dockerd","--","--iptables=false","--ip-masq=false","--host=unix:///var/run/docker.sock","--log-level=error","--storage-driver=overlay"]
-  - name: kubelet
-    image: gcr.io/google-containers/hyperkube-amd64:v1.6.4
-    mounts:
-     - type: cgroup
-       options: ["rw","nosuid","noexec","nodev","relatime"]
-    binds:
-     - /var:/var:rshared,rbind
-     - /etc/resolv.conf:/etc/resolv.conf
-     - /etc/kubernetes:/var/lib/kubernetes:rshared,rbind
-    capabilities:
-     - all
-    rootfsPropagation: shared
-    command: ["kubelet","--allow-privileged=true","--require-kubeconfig=true","--register-node=true","--cloud-provider=gce","--cloud-config=/var/lib/kubernetes/gce.conf"
-,"--container-runtime=docker","--cluster-domain=cluster.local","--cluster-dns=10.32.0.10","--docker=unix:///var/run/docker.sock","--kubeconfig=/var/lib/kubernetes/kubeconfig"
-,"--serialize-image-pulls=false","--v=2"]
-  - name: kube-proxy
-    image: gcr.io/google-containers/kube-proxy:v1.6.4
-    binds:
-     - /var:/var:rshared,rbind
-     - /etc/resolv.conf:/etc/resolv.conf
-     - /etc/kubernetes:/var/lib/kubernetes:rshared,rbind
-    rootfsPropagation: shared
-    capabilities:
-     - all
-    command: ["kube-proxy","--cluster-cidr=10.200.0.0/16","--kubeconfig=/var/lib/kubernetes/kubeconfig","--proxy-mode=iptables","--v=2"]
 files:
   - path: etc/kubernetes
     directory: true

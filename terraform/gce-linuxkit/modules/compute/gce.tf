@@ -1,6 +1,6 @@
 resource "google_compute_image" "kubemaster" {
   name = "kubemaster"
-  depends_on = ["null_resource.node_image"]
+  depends_on = ["null_resource.master_image"]
   raw_disk {
     source = "https://storage.googleapis.com/pendi/kubemaster.img.tar.gz"
   }
@@ -8,7 +8,7 @@ resource "google_compute_image" "kubemaster" {
 
 resource "google_compute_image" "kubenode" {
   name = "kubenode"
-  depends_on = ["null_resource.master_image"]
+  depends_on = ["null_resource.node_image"]
   raw_disk {
     source = "https://storage.googleapis.com/pendi/kubenode.img.tar.gz"
   }
@@ -65,31 +65,31 @@ resource "null_resource" "certs" {
 
 resource "null_resource" "gce_conf" {
   provisioner "local-exec" {
-    command = "echo '${data.template_file.gce_conf.rendered}' >> ${path.module}/temp/gce.conf"
+    command = "echo '${data.template_file.gce_conf.rendered}' > ${path.module}/temp/gce.conf"
   }
 }
 
 resource "null_resource" "kubeconfig" {
   provisioner "local-exec" {
-    command = "echo '${data.template_file.kubeconfig.rendered}' >> ${path.module}/temp/kubeconfig"
+    command = "echo '${data.template_file.kubeconfig.rendered}' > ${path.module}/temp/kubeconfig"
   }
 }
 
 resource "null_resource" "token" {
   provisioner "local-exec" {
-    command = "echo '${data.template_file.token.rendered}' >> ${path.module}/temp/token.csv"
+    command = "echo '${data.template_file.token.rendered}' > ${path.module}/temp/token.csv"
   }
 }
 
 resource "null_resource" "kubemaster" {
   provisioner "local-exec" {
-    command = "echo '${data.template_file.kubemaster.rendered}' >> ${path.module}/temp/kubemaster.yml"
+    command = "echo '${data.template_file.kubemaster.rendered}' > ${path.module}/temp/kubemaster.yml"
   }
 }
 
 resource "null_resource" "kubenode" {
   provisioner "local-exec" {
-    command = "echo '${data.template_file.kubenode.rendered}' >> ${path.module}/temp/kubenode.yml"
+    command = "echo '${data.template_file.kubenode.rendered}' > ${path.module}/temp/kubenode.yml"
   }
 }
 
