@@ -1,7 +1,0 @@
-- name: Download kubectl binary
-  get_url:
-    url: https://storage.googleapis.com/kubernetes-release/release/v1.6.4/bin/linux/amd64/kubectl
-    dest: /usr/bin/kubectl
-
-- name: Changing kubectl permission
-  file: dest=/usr/bin/kubectl mode=a+x

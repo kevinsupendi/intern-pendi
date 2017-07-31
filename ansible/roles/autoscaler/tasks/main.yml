@@ -1,9 +1,0 @@
-- template:
-    src: "{{ role_path }}/templates/ca-controller.yaml.j2"
-    dest: /tmp/ca-controller.yaml
-    owner: root
-    group: root
-    mode: 0644
-- name: Deploy addons cluster autoscaler
-  command: kubectl apply -f /tmp/ca-controller.yaml
-  ignore_errors: yes

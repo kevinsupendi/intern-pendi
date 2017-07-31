@@ -1,6 +1,0 @@
-- include: init.yml
-- include: etcd.yml
-- include: init.yml
-- include: master.yml
-#- include: node.yml
-- include: addons.yml

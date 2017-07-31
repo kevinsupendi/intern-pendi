@@ -1,7 +1,0 @@
-- name: Download kube-controller-manager binary
-  get_url:
-    url: https://storage.googleapis.com/kubernetes-release/release/v1.6.4/bin/linux/amd64/kube-controller-manager
-    dest: /usr/bin/kube-controller-manager
-
-- name: Changing kube-controller-manager permission
-  file: dest=/usr/bin/kube-controller-manager mode=a+x
