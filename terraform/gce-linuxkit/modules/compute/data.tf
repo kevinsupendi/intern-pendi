@@ -72,11 +72,19 @@ data "template_file" "gce_conf" {
   }
 }
 
-data "template_file" "kubelet_kubeconfig" {
-  template = "${file("${path.module}/templates/kubelet_kubeconfig.tpl")}"
+data "template_file" "kubeconfig" {
+  template = "${file("${path.module}/templates/kubeconfig.tpl")}"
 
   vars = {
     kubelet_token="${var.kubelet_token}"
     master_lb_ip="${cidrhost("${var.subnet_ip_cidr_range}", var.lb_offset)}"
+  }
+}
+
+data "template_file" "token" {
+  template = "${file("${path.module}/templates/token.csv.tpl")}"
+
+  vars = {
+    kubelet_token="${var.kubelet_token}"
   }
 }

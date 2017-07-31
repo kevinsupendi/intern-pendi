@@ -78,3 +78,8 @@ rm ca-csr.json
 rm ca-key.pem
 rm kubernetes.csr
 #rm kubernetes-csr.json
+
+mv ca.pem modules/compute/temp/ca.pem
+mv kubernetes.pem modules/compute/temp/kubernetes.pem
+mv kubernetes-key.pem modules/compute/temp/kubernetes-key.pem
+mv kubernetes-csr.json modules/compute/temp/kubernetes-csr.json

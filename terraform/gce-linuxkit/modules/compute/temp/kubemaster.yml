@@ -43,23 +43,23 @@ services:
      - /etc/resolv.conf:/etc/resolv.conf
      - /etc/kubernetes:/var/lib/kubernetes:rshared,rbind
     rootfsPropagation: shared
-    command: ["etcd","--name","${hostname}","--cert-file=/var/lib/kubernetes/kubernetes.pem","--key-file=/var/lib/kubernetes/kubernetes-key.pem",
+    command: ["etcd","--name","master-1","--cert-file=/var/lib/kubernetes/kubernetes.pem","--key-file=/var/lib/kubernetes/kubernetes-key.pem",
 "--peer-cert-file=/var/lib/kubernetes/kubernetes.pem","--peer-key-file=/var/lib/kubernetes/kubernetes-key.pem","--trusted-ca-file=/var/lib/kubernetes/ca.pem",
-"--peer-trusted-ca-file=/var/lib/kubernetes/ca.pem","--initial-advertise-peer-urls","https://${internal_ip}:2380","--listen-peer-urls","https://${internal_ip}:2380",
-"--listen-client-urls","https://${internal_ip}:2379,http://127.0.0.1:2379","--advertise-client-urls","https://${internal_ip}:2379","--initial-cluster-token","etcd-cluster-0","--initial-cluster","${etcd_ips}",
+"--peer-trusted-ca-file=/var/lib/kubernetes/ca.pem","--initial-advertise-peer-urls","https://10.240.16.4:2380","--listen-peer-urls","https://10.240.16.4:2380",
+"--listen-client-urls","https://10.240.16.4:2379,http://127.0.0.1:2379","--advertise-client-urls","https://10.240.16.4:2379","--initial-cluster-token","etcd-cluster-0","--initial-cluster","master-1=https://10.240.16.4:2380",
 "--initial-cluster-state","new"]
   - name: kube-apiserver
-    image: gcr.io/google-containers/kube-apiserver-amd64:v${kubernetes_version}
+    image: gcr.io/google-containers/kube-apiserver-amd64:v1.6.4
     binds:
      - /var:/var:rshared,rbind
      - /etc/resolv.conf:/etc/resolv.conf
      - /etc/kubernetes:/var/lib/kubernetes:rshared,rbind
     rootfsPropagation: shared
     command: ["kube-apiserver","--admission-control=NamespaceLifecycle,LimitRanger,ServiceAccount,PersistentVolumeLabel,DefaultStorageClass,ResourceQuota,DefaultTolerationSeconds",
-"--advertise-address=${internal_ip}","--allow-privileged=true","--apiserver-count=${num_master}","--authorization-mode=RBAC,ABAC","--authorization-policy-file=/var/lib/kubernetes/authorization-policy.jsonl",
+"--advertise-address=10.240.16.4","--allow-privileged=true","--apiserver-count=1","--authorization-mode=RBAC,ABAC","--authorization-policy-file=/var/lib/kubernetes/authorization-policy.jsonl",
 "--bind-address=0.0.0.0","--cloud-provider=gce","--cloud-config=/var/lib/kubernetes/gce.conf","--client-ca-file=/var/lib/kubernetes/ca.pem","--enable-swagger-ui=true",
-"--etcd-quorum-read=true","--etcd-cafile=/var/lib/kubernetes/ca.pem","--etcd-servers=${etcd_endpoints}","--service-account-key-file=/var/lib/kubernetes/kubernetes-key.pem",
-"--service-cluster-ip-range=${svc_cluster_ip_range}","--service-node-port-range=${svc_node_port_range}","--tls-cert-file=/var/lib/kubernetes/kubernetes.pem","--tls-private-key-file=/var/lib/kubernetes/kubernetes-key.pem",
+"--etcd-quorum-read=true","--etcd-cafile=/var/lib/kubernetes/ca.pem","--etcd-servers=https://10.240.16.4:2379","--service-account-key-file=/var/lib/kubernetes/kubernetes-key.pem",
+"--service-cluster-ip-range=10.32.0.0/24","--service-node-port-range=30000-32767","--tls-cert-file=/var/lib/kubernetes/kubernetes.pem","--tls-private-key-file=/var/lib/kubernetes/kubernetes-key.pem",
 "--token-auth-file=/var/lib/kubernetes/token.csv","--v=2"]
   - name: kube-controller-manager
     binds:
@@ -68,17 +68,17 @@ services:
      - /etc/ssl:/etc/ssl:rshared,rbind
      - /etc/kubernetes:/var/lib/kubernetes:rshared,rbind
     rootfsPropagation: shared
-    image: gcr.io/google-containers/kube-controller-manager-amd64:v${kubernetes_version}
-    command: ["kube-controller-manager","--allocate-node-cidrs=true","--cluster-cidr=${cluster_cidr}","--cluster-name=kubernetes","--cloud-provider=gce","--cloud-config=/var/lib/kubernetes/gce.conf"
+    image: gcr.io/google-containers/kube-controller-manager-amd64:v1.6.4
+    command: ["kube-controller-manager","--allocate-node-cidrs=true","--cluster-cidr=10.200.0.0/16","--cluster-name=kubernetes","--cloud-provider=gce","--cloud-config=/var/lib/kubernetes/gce.conf"
 ,"--leader-elect=true","--master=http://127.0.0.1:8080","--root-ca-file=/var/lib/kubernetes/ca.pem","--service-account-private-key-file=/var/lib/kubernetes/kubernetes-key.pem"
-,"--service-cluster-ip-range=${svc_cluster_ip_range}","--v=2"]
+,"--service-cluster-ip-range=10.32.0.0/24","--v=2"]
   - name: kube-scheduler
     binds:
      - /var:/var:rshared,rbind
      - /etc/resolv.conf:/etc/resolv.conf
      - /etc/kubernetes:/var/lib/kubernetes:rshared,rbind
     rootfsPropagation: shared
-    image: gcr.io/google-containers/kube-scheduler-amd64:v${kubernetes_version}
+    image: gcr.io/google-containers/kube-scheduler-amd64:v1.6.4
     command: ["kube-scheduler","--leader-elect=true","--master=http://127.0.0.1:8080","--v=2"]
   - name: flannel
     binds:
@@ -107,7 +107,7 @@ services:
     rootfsPropagation: shared
     command: ["/usr/local/bin/docker-init", "/usr/local/bin/dockerd","--","--iptables=false","--ip-masq=false","--host=unix:///var/run/docker.sock","--log-level=error","--storage-driver=overlay"]
   - name: kubelet
-    image: gcr.io/google-containers/hyperkube-amd64:v${kubernetes_version}
+    image: gcr.io/google-containers/hyperkube-amd64:v1.6.4
     mounts:
      - type: cgroup
        options: ["rw","nosuid","noexec","nodev","relatime"]
@@ -119,10 +119,10 @@ services:
      - all
     rootfsPropagation: shared
     command: ["kubelet","--allow-privileged=true","--require-kubeconfig=true","--register-node=true","--cloud-provider=gce","--cloud-config=/var/lib/kubernetes/gce.conf"
-,"--container-runtime=docker","--cluster-domain=${cluster_domain}","--cluster-dns=${cluster_dns}","--docker=unix:///var/run/docker.sock","--kubeconfig=/var/lib/kubernetes/kubeconfig"
+,"--container-runtime=docker","--cluster-domain=cluster.local","--cluster-dns=10.32.0.10","--docker=unix:///var/run/docker.sock","--kubeconfig=/var/lib/kubernetes/kubeconfig"
 ,"--serialize-image-pulls=false","--v=2"]
   - name: kube-proxy
-    image: gcr.io/google-containers/kube-proxy:v${kubernetes_version}
+    image: gcr.io/google-containers/kube-proxy:v1.6.4
     binds:
      - /var:/var:rshared,rbind
      - /etc/resolv.conf:/etc/resolv.conf
@@ -130,7 +130,7 @@ services:
     rootfsPropagation: shared
     capabilities:
      - all
-    command: ["kube-proxy","--cluster-cidr=${cluster_cidr}","--kubeconfig=/var/lib/kubernetes/kubeconfig","--proxy-mode=iptables","--v=2"]
+    command: ["kube-proxy","--cluster-cidr=10.200.0.0/16","--kubeconfig=/var/lib/kubernetes/kubeconfig","--proxy-mode=iptables","--v=2"]
 files:
   - path: etc/kubernetes
     directory: true
