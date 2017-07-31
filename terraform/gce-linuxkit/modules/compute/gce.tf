@@ -101,7 +101,7 @@ resource "null_resource" "node_image" {
 }
 
 resource "null_resource" "master_image" {
-  depends_on = ["null_resource.kubemaster","null_resource.certs","null_resource.kubeconfig","null_resource.gce_conf","null_resource.token"]
+  depends_on = ["null_resource.kubemaster","null_resource.certs","null_resource.kubeconfig","null_resource.gce_conf","null_resource.token","null_resource.node_image"]
   provisioner "local-exec" {
     command = "moby build -output gcp ${path.module}/temp/kubemaster.yml && linuxkit push gcp -project intern-kevin -bucket pendi kubemaster.img.tar.gz"
   }
