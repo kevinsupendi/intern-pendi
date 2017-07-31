@@ -1,5 +1,7 @@
 variable "project_id" {}
 
+variable "bucket_name" {}
+
 variable "net_name" {}
 
 variable "gce_zone" {}

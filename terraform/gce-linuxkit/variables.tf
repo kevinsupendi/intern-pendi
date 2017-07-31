@@ -1,5 +1,7 @@
 variable "project_id" {}
 
+variable "bucket_name" {}
+
 variable "subnet_ip_cidr_range" {}
 
 variable "gce_region" {}

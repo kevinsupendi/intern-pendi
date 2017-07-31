@@ -14,7 +14,7 @@ resource "google_compute_instance_template" "igm" {
 
   // Create a new boot disk from an image
   disk {
-    source_image = "${google_compute_image.kubenode.self_link}"
+    source_image = "projects/intern-kevin/global/images/kubenode"
     auto_delete  = true
     boot         = true
   }

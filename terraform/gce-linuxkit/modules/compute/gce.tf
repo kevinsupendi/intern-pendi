@@ -1,19 +1,3 @@
-resource "google_compute_image" "kubemaster" {
-  name = "kubemaster"
-  depends_on = ["null_resource.master_image"]
-  raw_disk {
-    source = "https://storage.googleapis.com/pendi/kubemaster.img.tar.gz"
-  }
-}
-
-resource "google_compute_image" "kubenode" {
-  name = "kubenode"
-  depends_on = ["null_resource.node_image"]
-  raw_disk {
-    source = "https://storage.googleapis.com/pendi/kubenode.img.tar.gz"
-  }
-}
-
 resource "google_compute_instance" "master" {
   count = "${var.num_master}"
   name         = "${var.master_name}-${count.index + 1}"
@@ -24,7 +8,7 @@ resource "google_compute_instance" "master" {
   tags = "${var.tags}"
 
   disk {
-    image = "${google_compute_image.kubemaster.self_link}"
+    image = "projects/intern-kevin/global/images/kubemaster"
     size = "${var.master_disk_size}"
   }
 
@@ -96,13 +80,13 @@ resource "null_resource" "kubenode" {
 resource "null_resource" "node_image" {
   depends_on = ["null_resource.kubenode","null_resource.certs","null_resource.kubeconfig","null_resource.gce_conf"]
   provisioner "local-exec" {
-    command = "moby build -output gcp ${path.module}/temp/kubenode.yml && linuxkit push gcp -project intern-kevin -bucket pendi kubenode.img.tar.gz"
+    command = "moby build -output gcp ${path.module}/temp/kubenode.yml && linuxkit push gcp -project ${project_id} -bucket ${bucket_name} kubenode.img.tar.gz"
   }
 }
 
 resource "null_resource" "master_image" {
   depends_on = ["null_resource.kubemaster","null_resource.certs","null_resource.kubeconfig","null_resource.gce_conf","null_resource.token","null_resource.node_image"]
   provisioner "local-exec" {
-    command = "moby build -output gcp ${path.module}/temp/kubemaster.yml && linuxkit push gcp -project intern-kevin -bucket pendi kubemaster.img.tar.gz"
+    command = "moby build -output gcp ${path.module}/temp/kubemaster.yml && linuxkit push gcp -project ${project_id} -bucket ${bucket_name} kubemaster.img.tar.gz"
   }
 }

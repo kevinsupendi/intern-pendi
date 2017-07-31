@@ -1,5 +1,6 @@
 # PROJECT
 project_id="intern-kevin"
+bucket_name="pendi"
 cred_path="~/svc_account/account.json"
 
 # NETWORK

@@ -2,9 +2,11 @@
 *.tfstate.*
 *.retry
 *.pem
+*.img.*
 .terraform/
 certs/
 ansible/roles/certs/files/
 ansible/inventories/inv.ini
 terraform/gce/modules/compute/gce_template_startup.sh.tpl
 terraform/gce/modules/compute/gce_master_startup.sh.tpl
+terraform/gce-linuxkit/modules/compute/temp/

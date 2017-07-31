@@ -5,6 +5,7 @@ module "compute" {
   subnet = "${google_compute_subnetwork.subnet.name}"
   net_name="${var.net_name}"
   project_id="${var.project_id}"
+  bucket_name="${var.bucket_name}"
   subnet_ip_cidr_range="${var.subnet_ip_cidr_range}"
   ip_offset="${var.ip_offset}"
 
