@@ -405,4 +405,13 @@ EOF
 cat > /tmp/addons/default.yaml<<EOF
 ${storageclass}
 EOF
+cat > /tmp/addons/grafana.yaml<<EOF
+${grafana}
+EOF
+cat > /tmp/addons/influxdb.yaml<<EOF
+${influxdb}
+EOF
+cat > /tmp/addons/heapster.yaml<<EOF
+${heapster}
+EOF
 kubectl apply -f /tmp/addons/

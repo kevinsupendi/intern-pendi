@@ -17,7 +17,7 @@ num_master=1
 master_disk_size=10
 tags=["node"]
 can_ip_forward="true"
-svc_account_scopes=["compute-rw"]
+svc_account_scopes=["compute-rw","storage-rw"]
 block_project_ssh_keys="true"
 
 # MASTER SCRIPT

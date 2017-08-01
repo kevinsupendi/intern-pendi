@@ -6,6 +6,7 @@
 Kubernetes Cluster creation involving  Terraform and Google Cloud Platform. 
 Terraform is used for creating VMs in GCE and configure startup script.
 This project used Ubuntu 16.04 LTS. The result should be reproducible with any Linux machine supporting systemd services.
+There is also Docker LinuxKit exploration, though it still has limitations because GCE startup script is not supported yet.
 
 
 ### Quickstart
@@ -19,7 +20,7 @@ Create Kubernetes cluster manually with this steps
 
 
 ### After setting up
-By default only DNS, Dashboard, Cluster Autoscaler and Storageclass addons deployed.
+By default only DNS, Dashboard, Cluster Autoscaler, Heapster and Storageclass addons are deployed.
 You can try deploying other application or change deployed addons configuration.
 
 Here is a few suggestions of useful addons and Kubernetes resources :

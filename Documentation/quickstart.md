@@ -1,6 +1,6 @@
 ## Quickstart
 This instructions will install Kubernetes cluster on GCP with default configuration 1 master and 1 node instance.
-In the end of the quickstart, you will have a working Kubernetes cluster with addons for logging, monitoring and dashboard.
+In the end of the quickstart, you will have a working Kubernetes cluster with addons for DNS, monitoring and dashboard.
 See below for list of addons.
 
 ### Prerequisites
@@ -162,7 +162,7 @@ Test cluster autoscaler addons by deploying too much pods in one node
 6. Check in Google Cloud Console if the node has been deleted
 
 ### What's next ?
-By default all addons below will be automatically deployed in the process, except for Jenkins and Kibana application.
+By default DNS, Dashboard, and Heapster addons are deployed.
 You can try deploying several application or change deployed addons configuration.
 
 List of addons :
