@@ -4,12 +4,11 @@
 
 - gcloud command line tools (push image) [link](https://cloud.google.com/container-engine/docs/tutorials/hello-node)
 
-
 ### Demo
 
-0. Setup kubernetes with Terraform in folder terraform/gce. See Quickstart for more details
+1. Setup kubernetes with Terraform in folder terraform/gce. See Quickstart for more details
 
-1. Warm-up
+2. Warm-up
 	- kubectl version
 	- kubectl get nodes
 	- kubectl get pods
@@ -19,22 +18,28 @@
 	- kubectl get deployments
 	- kubectl -n kube-system get deployments
 
-2. Deploy
+3. Set the project ID environment variable with your project ID
+
+	```
+	PROJECT_ID="intern-kevin"
+	```
+
+4. Deploy
 
 	- Deploy nodejs app, start from building image, pushing, and deployment
 
 	- Edit server.js file, change the hello message for version 1
 
 	```
-	docker build -t gcr.io/intern-kevin/hello-node:v1 .
-	gcloud docker -- push gcr.io/intern-kevin/hello-node:v1
+	docker build -t gcr.io/${PROJECT_ID}/hello-node:v1 .
+	gcloud docker -- push gcr.io/${PROJECT_ID}/hello-node:v1
 	```	
 
 	- Edit server.js, change the hello message for version 2
 	
 	```
-	docker build -t gcr.io/intern-kevin/hello-node:v2 .
-	gcloud docker -- push gcr.io/intern-kevin/hello-node:v2
+	docker build -t gcr.io/${PROJECT_ID}/hello-node:v2 .
+	gcloud docker -- push gcr.io/${PROJECT_ID}/hello-node:v2
 	```
 
 	Now there will be 2 images in Google Container Registry
@@ -42,7 +47,7 @@
 	- Deploy v1 app with 1 replica
 
 	```
-	kubectl run hello --image=gcr.io/intern-kevin/hello-node:v1 --port=80
+	kubectl run hello --image=gcr.io/${PROJECT_ID}/hello-node:v1 --port=80
 	```
 
 	- Pod is not accessible yet, expose the service with the type LoadBalancer
@@ -59,7 +64,7 @@
 
 	- Access the service through your web browser with the external IP. Make sure it is working correctly
 
-3. Self Healing
+5. Self Healing
 
 	- Delete pod
 
@@ -69,7 +74,7 @@
 
 	- Refresh web browser to see that the hostname has changed because the previous pod has gone
 
-4. Service discovery & Load Balancing
+6. Service discovery & Load Balancing
 
 	- Scale Pod replicas to 3
 
@@ -79,12 +84,12 @@
 
 	- Refresh web browser and see the changes on hostname, it means the pod's load balancer is working
 
-5. Rolling update & Rollback
+7. Rolling update & Rollback
 
 	- Do a rolling update, but make a typo deliberately
 
 	```
-	kubectl set image deployment/hello hello=gcr.io/intern-kevin/hello-mode:v2
+	kubectl set image deployment/hello hello=gcr.io/${PROJECT_ID}/hello-mode:v2
 	```
 
 	- Refresh web browser to show that the app still works with v1
@@ -108,13 +113,13 @@
 	- Rolling update with the correct image
 
 	```
-	kubectl set image deployment/hello hello=gcr.io/intern-kevin/hello-node:v2
+	kubectl set image deployment/hello hello=gcr.io/${PROJECT_ID}/hello-node:v2
 	kubectl get pods
 	```
 
 	- Refresh to see that version 2 message is printed
 
-6. Secrets
+8. Secrets
 
 	- Create secret for MySQL root password
 
@@ -136,7 +141,7 @@
 	mysql -u root -p
 	```
 
-7. Autoscaling
+9. Autoscaling
 
 	- Deploy apache app and autoscale it
 
@@ -170,7 +175,7 @@
 	Check in Cloud Console to see new nodes.
 	CA will scale down in 10 minutes
 
-8. Clean up
+10. Clean up
 
 	```
 	kubectl delete --all deployment --namespace=default
