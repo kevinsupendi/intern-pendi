@@ -1,0 +1,2 @@
+docker build -t gcr.io/intern-kevin/hello-node:v1 .
+gcloud docker -- push gcr.io/intern-kevin/hello-node:v1
