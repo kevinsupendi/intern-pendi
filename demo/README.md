@@ -7,7 +7,7 @@
 
 ### Demo
 
-0. Setup kubernetes dengan Terraform di terraform/gce
+0. Setup kubernetes with Terraform in folder terraform/gce. See Quickstart for more details
 
 1. Warm-up
 	- kubectl version
@@ -20,83 +20,84 @@
 	- kubectl -n kube-system get deployments
 
 2. Deploy
-	- Deploy nodejs app, mulai dari build, push image, dan deploy di kubernetes
 
-	- Edit server.js, ubah kata-kata yang akan diprint
+	- Deploy nodejs app, start from building image, pushing, and deployment
+
+	- Edit server.js file, change the hello message for version 1
 
 	```
 	docker build -t gcr.io/intern-kevin/hello-node:v1 .
 	gcloud docker -- push gcr.io/intern-kevin/hello-node:v1
 	```	
 
-	- Edit server.js, ubah kata-kata yang akan diprint
+	- Edit server.js, change the hello message for version 2
 	
 	```
 	docker build -t gcr.io/intern-kevin/hello-node:v2 .
 	gcloud docker -- push gcr.io/intern-kevin/hello-node:v2
 	```
 
-	Sekarang akan ada 2 versi image di GCP container registry
+	Now there will be 2 images in Google Container Registry
 	
-	- Deploy v1 dengan 1 replica
+	- Deploy v1 app with 1 replica
 
 	```
 	kubectl run hello --image=gcr.io/intern-kevin/hello-node:v1 --port=80
 	```
 
-	- App belum bisa diakses dari luar tanpa Service, expose dengan tipe LoadBalancer
+	- Pod is not accessible yet, expose the service with the type LoadBalancer
 
 	```
 	kubectl expose deployment hello --type=LoadBalancer
 	```
-	- Dapatkan Pod name
+	- Get Pod name
 
 	```
 	kubectl get pods
 	kubectl get svc
 	```
 
-	- Buka di web browser dan akses external IP, pastikan bisa diakses
+	- Access the service through your web browser with the external IP. Make sure it is working correctly
 
 3. Self Healing
 
-	- Delete pod dengan pod name
+	- Delete pod
 
 	```
 	kubectl delete pod hello-xxxx
 	```
 
-	- Refresh web browser untuk melihat bahwa hostname telah berubah ke pod lain
+	- Refresh web browser to see that the hostname has changed because the previous pod has gone
 
 4. Service discovery & Load Balancing
 
-	- Tambahkan pod replica menjadi 3
+	- Scale Pod replicas to 3
 
 	```
 	kubectl scale deployment hello --replicas=3
 	```
 
-	- Refresh di web browser dan lihat bahwa ada perubahan hostname, mengindikasikan adanya Load Balancing antar Pod
+	- Refresh web browser and see the changes on hostname, it means the pod's load balancer is working
 
 5. Rolling update & Rollback
 
-	- Lakukan rolling update, tetapi sengaja memberikan typo
+	- Do a rolling update, but make a typo deliberately
 
 	```
 	kubectl set image deployment/hello hello=gcr.io/intern-kevin/hello-mode:v2
 	```
 
-	- Tunjukkan bahwa meskipun image salah, aplikasi v1 tetap berjalan di web
-	- Cek pod dan rollout status
+	- Refresh web browser to show that the app still works with v1
+	- Check pod and rollout status
 
 	```
 	kubectl get pods
 	kubectl get deployment
 	kubectl rollout status deployment hello
 	```
-	Ctrl^C untuk menghentikan rollout status
+	Ctrl-C to stop rollout status
 
-	- Lakukan rollback
+	- Do a rollback
 
 	```
 	kubectl rollout undo deployment hello
@@ -104,25 +105,24 @@
 	kubectl get pods
 	```
 
-	- Rolling update dengan image yang benar
+	- Rolling update with the correct image
 
 	```
 	kubectl set image deployment/hello hello=gcr.io/intern-kevin/hello-node:v2
 	kubectl get pods
 	```
 
-	- Refresh untuk melihat pesan versi 2 telah diprint
+	- Refresh to see that version 2 message is printed
 
 6. Secrets
 
-	- Buat secret untuk MySQL root password
+	- Create secret for MySQL root password
 
 	```
-	kubectl create secret generic mysql-root-pass --from-literal=root='inibukandefaultpass'
+	kubectl create secret generic mysql-root-pass --from-literal=root='differentfromdefaultpass'
 	```
 
-	Kemudian copy file mysql.yaml dan deploy ke Kubernetes.
-	Lalu login ke dalam container.
+	Copy mysql.yaml to VM. Deploy the file then login to mysql Pod
 
 	```
 	kubectl apply -f mysql.yaml
@@ -130,7 +130,7 @@
 	kubectl exec -it mysql-xxx -- bash
 	```
 	
-	- Login ke mysql dengan password dari secret yang telah dibuat
+	- Login to mysql with the password above
 
 	```
 	mysql -u root -p
@@ -138,7 +138,7 @@
 
 7. Autoscaling
 
-	- Deploy aplikasi apache dan autoscale
+	- Deploy apache app and autoscale it
 
 	```
 	kubectl run php-apache --image=gcr.io/google_containers/hpa-example --requests=cpu=200m --expose --port=80
@@ -146,29 +146,29 @@
 	kubectl get hpa
 	```
 
-	- Buat load generator menggunakan busybox dengan terminal lain
+	- Open another terminal to create load generator from busybox image
 
 	```
 	kubectl run -it busy --image=busybox /bin/sh
 	while true; do wget -q -O- http://php-apache.default; done	
 	```
 	
-	- Cek hpa sesekali untuk melihat apakah deployment telah discale-up, jika test selesai, Ctrl-C Busybox.
+	- Cek hpa every minute to see if deployment has been scaled-up, if you're done with testing, Ctrl-C Busybox.
 
 	```
 	kubectl get hpa
 	```
 
-	HPA akan melakukan scale down dalam waktu 5 menit.
+	HPA will scale down in 5 minutes.
 
-	- Deploy 120 pod nginx untuk menguji Cluster Autoscaler
+	- Deploy 120 pod nginx to test Cluster Autoscaler
 
 	```
 	kubectl run nginx --image=nginx --replicas=120
 	```
 	
-	Lihat di Cloud Console node sudah bertambah.
-	CA akan melakukan scale down dalam waktu 10 menit
+	Check in Cloud Console to see new nodes.
+	CA will scale down in 10 minutes
 
 8. Clean up
 
