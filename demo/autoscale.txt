@@ -1,2 +1,0 @@
-kubectl run php-apache --image=gcr.io/google_containers/hpa-example --requests=cpu=200m --expose --port=80
-kubectl autoscale deployment php-apache --cpu-percent=50 --min=1 --max=10
