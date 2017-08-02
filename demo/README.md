@@ -74,6 +74,8 @@
 
 	- Refresh web browser to see that the hostname has changed because the previous pod has gone
 
+	- Delete node, wait until another node comes out
+
 6. Service discovery & Load Balancing
 
 	- Scale Pod replicas to 3
