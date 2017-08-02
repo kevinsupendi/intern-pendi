@@ -84,6 +84,19 @@
 
 	- Refresh web browser and see the changes on hostname, it means the pod's load balancer is working
 
+	- Run a busybox pod and sh into it
+
+	```
+	kubectl run -it --image=busybox --port=80 -- sh	
+	```
+
+	- Access another service by service name, not by IP
+
+	```
+	curl http://hello.default
+	nslookup hello.default
+	```
+
 7. Rolling update & Rollback
 
 	- Do a rolling update, but make a typo deliberately
@@ -121,7 +134,7 @@
 
 8. Secrets
 
-	- Create secret for MySQL root password
+	- Create secret for MySQL root password. This secret will be used as Environment Variable in mysql.yaml
 
 	```
 	kubectl create secret generic mysql-root-pass --from-literal=root='differentfromdefaultpass'
@@ -166,12 +179,25 @@
 
 	HPA will scale down in 5 minutes.
 
-	- Deploy 120 pod nginx to test Cluster Autoscaler
+	- Schedule HPA scale up with CronJob and demonstrate Cluster Autoscaler
+	- Copy cronjob.yml to VM and apply it
 
 	```
-	kubectl run nginx --image=nginx --replicas=120
+	kubectl apply -f cronjob.yml
 	```
-	
+	Wait for 3 minutes
+
+	- Check if cronjob has been activated
+
+	```
+	kubectl get cronjob
+	```
+	- Delete cronjob
+
+	```
+	kubectl delete cronjob update-hpa
+	```
+
 	Check in Cloud Console to see new nodes.
 	CA will scale down in 10 minutes
 
