@@ -89,13 +89,13 @@
 	- Run a busybox pod and sh into it
 
 	```
-	kubectl run -it --image=busybox --port=80 -- sh	
+	kubectl run -it busy --image=busybox --port=80 -- sh	
 	```
 
 	- Access another service by service name, not by IP
 
 	```
-	curl http://hello.default
+	wget http://hello.default
 	nslookup hello.default
 	```
 
