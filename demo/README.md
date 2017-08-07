@@ -74,8 +74,6 @@
 
 	- Refresh web browser to see that the hostname has changed because the previous pod has gone
 
-	- Delete node, wait until another node comes out
-
 6. Service discovery & Load Balancing
 
 	- Scale Pod replicas to 3
@@ -89,7 +87,7 @@
 	- Run a busybox pod and sh into it
 
 	```
-	kubectl run -it busy --image=busybox --port=80 -- sh	
+	kubectl run -it busy --image=busybox -- sh	
 	```
 
 	- Access another service by service name, not by IP
@@ -136,25 +134,40 @@
 
 8. Secrets
 
-	- Create secret for MySQL root password. This secret will be used as Environment Variable in mysql.yaml
+	- Create secret. This secret will be used as Environment Variable and files
 
 	```
-	kubectl create secret generic mysql-root-pass --from-literal=root='differentfromdefaultpass'
+	kubectl create secret generic testsecret --from-literal=rahasiasaya='inirahasia'
 	```
 
-	Copy mysql.yaml to VM. Deploy the file then login to mysql Pod
+	Copy envsecret.yaml to VM. Deploy the file then login to Pod
 
 	```
-	kubectl apply -f mysql.yaml
+	kubectl apply -f envsecret.yaml
 	kubectl get pods
-	kubectl exec -it mysql-xxx -- bash
+	kubectl exec -it envbusy-xxx -- sh
 	```
 	
-	- Login to mysql with the password above
+	- Print environment variable
 
 	```
-	mysql -u root -p
+	echo $SECRETFROMKUBE
 	```
+
+	Copy filesecret.yaml to VM. Deploy the file then login to Pod
+
+	```
+	kubectl apply -f filesecret.yaml
+	kubectl get pods
+	kubectl exec -it filebusy-xxx -- sh
+	```
+	
+	- Print file content
+
+	```
+	cat /etc/secretgue/
+	```
+	
 
 9. Autoscaling
 
