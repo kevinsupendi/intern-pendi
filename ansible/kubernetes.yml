@@ -3,4 +3,4 @@
 - include: init.yml
 - include: master.yml
 #- include: node.yml
-- include: addons.yml
+#- include: addons.yml

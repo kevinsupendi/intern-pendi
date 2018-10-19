@@ -48,9 +48,9 @@ cfssl gencert -initca ca-csr.json | cfssljson -bare ca
 
 #Generate server certificate
 echo '{
-  "CN": "*.c.intern-kevin.internal",
+  "CN": "*",
   "hosts": [
-    "10.32.0.1","10.240.16.2","master-1","10.240.16.3","10.240.16.4","10.240.16.5","10.240.16.6","10.240.16.7","10.240.16.8","10.240.16.9","10.240.16.10","localhost","127.0.0.1","kubernetes.default"
+    "10.32.0.1","192.168.45.131","192.168.45.132","192.168.45.133","kubekube1","kubekube2","kubekube3","localhost","127.0.0.1","kubernetes.default"
   ],
   "key": {
     "algo": "rsa",
